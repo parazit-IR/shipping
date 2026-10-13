@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "organization": "Shipping",
+  "component": "Platform",
+  "shape": "modular-monolith",
+  "transport": "rest",
+  "messaging": "none",
+  "cache": "none",
+  "businessAudit": "none",
+  "aiTooling": "codex",
+  "mpcoreVersion": "0.10.1",
+  "templateVersion": "0.10.1",
+  "cliVersion": "0.10.1"
+}

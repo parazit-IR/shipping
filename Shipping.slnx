@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Shipping.Platform.Api/Shipping.Platform.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Sample/">
+    <Project Path="src/Modules/Sample/Shipping.Modules.Sample.Api/Shipping.Modules.Sample.Api.csproj" />
+    <Project Path="src/Modules/Sample/Shipping.Modules.Sample.Application/Shipping.Modules.Sample.Application.csproj" />
+    <Project Path="src/Modules/Sample/Shipping.Modules.Sample.Domain/Shipping.Modules.Sample.Domain.csproj" />
+    <Project Path="src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Shipping.Modules.Sample.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Shipping.ArchitectureTests/Shipping.ArchitectureTests.csproj" />
+    <Project Path="tests/Shipping.UnitTests/Shipping.UnitTests.csproj" />
+  </Folder>
+</Solution>

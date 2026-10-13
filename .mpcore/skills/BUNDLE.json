@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "bundle": "mpcore-consumer-skills",
+  "bundleVersion": "0.10.1",
+  "mpcoreVersion": "0.10.1",
+  "aiTooling": "codex",
+  "canonicalPath": ".mpcore/skills",
+  "adapters": {},
+  "skills": [
+    "mpcore-apply-business-audit",
+    "mpcore-apply-observability",
+    "mpcore-apply-security",
+    "mpcore-configure-messaging",
+    "mpcore-design-transport-contract",
+    "mpcore-implement-ddd-module",
+    "mpcore-implement-vertical-slice",
+    "mpcore-integrate-contexts",
+    "mpcore-plan-bounded-context",
+    "mpcore-verify-business-behavior"
+  ]
+}
