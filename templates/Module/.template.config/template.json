@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Shipping",
+  "classifications": ["Shipping", "Module"],
+  "identity": "Shipping.Module.FourProject",
+  "name": "Shipping four-project module",
+  "shortName": "shipping-module",
+  "sourceName": "Sample",
+  "preferNameDirectory": false
+}
