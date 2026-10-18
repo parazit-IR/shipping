@@ -1,0 +1,23 @@
+# Only what the Dockerfile copies: Directory.Build.props, Shipping.slnx, dotnet-tools.json and src/.
+**/bin/
+**/obj/
+**/TestResults/
+.git/
+.github/
+.vs/
+.idea/
+.vscode/
+docs/
+tests/
+templates/
+**/*.user
+**/secrets.json
+**/appsettings.*.local.json
+appsettings.Local.json
+.env
+.env.*
+compose*.yaml
+compose*.yml
+docker-compose*.yml
+Dockerfile
+.dockerignore

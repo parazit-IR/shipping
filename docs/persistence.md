@@ -62,17 +62,22 @@ dotnet ef database update --project $P --startup-project $H --context SampleDbCo
 dotnet ef migrations script --idempotent --project $P --startup-project $H --context SampleDbContext
 ```
 
-Apply each module's migrations in turn. Order does not matter. As of SLS-125, the API does not migrate at
-startup in any environment and never calls `EnsureCreated`. The architecture test
+Apply each module's migrations in turn. Order does not matter. The API does not migrate at startup in any
+environment and never calls `EnsureCreated`. The architecture test
 `Nothing_in_the_host_or_a_module_creates_or_migrates_the_database` checks this for the host and module
 assemblies.
 
-## Development: automatic migrations (SLS-15 requirement, not yet implemented)
+## Development: automatic migrations (SLS-15)
 
-The parent story SLS-15 (US-EN-1) requires migrations to run automatically in Development. SLS-125 does not
-implement this. It is an open requirement for a later SLS-15 subtask, and SLS-125 does not remove it.
-MP Core 0.10.1 does not provide it ("Automatic migration on startup: Not available" in
-[capabilities](capabilities.md#migrations)), so it will be repository code. Whatever implements it must:
+The parent story SLS-15 (US-EN-1) requires migrations to run automatically in Development. Since SLS-126 the
+local environment does this outside the host. The `migrate` service in `compose.yaml` (the `migrator` target
+of the `Dockerfile`) runs one migration bundle per module, built with `dotnet ef migrations bundle --context
+<M>DbContext`, before the API starts. The API starts only if every bundle succeeds. The host and the guard test
+are unchanged. See [local environment](local-environment.md#startup-order).
+
+MP Core 0.10.1 does not provide this ("Automatic migration on startup: Not available" in
+[capabilities](capabilities.md#migrations)), so it is repository code. It meets the constraints recorded here
+by SLS-125:
 
 - run only in Development and never in production, where migrations remain a deployment step (below);
 - apply every module's migrations through that module's own context, so each history stays in

@@ -14,6 +14,18 @@ dotnet test Shipping.slnx -c Release --no-build
 
 `Shipping.IntegrationTests` starts PostgreSQL 17.6 in a container through Testcontainers, so it needs a running Docker engine. To run the host, set `ConnectionStrings:PostgreSql` in user secrets or the environment; no connection string is committed.
 
+## Run locally with Docker Compose
+
+US-EN-1 T3 adds the local environment: PostgreSQL, the API and Traefik, with each module's migrations applied before the API starts.
+
+```bash
+cp .env.example .env          # set POSTGRES_PASSWORD
+docker compose up --build     # http://localhost:8000 through Traefik
+docker compose down           # the database volume is kept
+```
+
+See [local environment](docs/local-environment.md) for services, configuration, persistence and limits. There is no health endpoint yet (T4).
+
 ## Create a module
 
 ```bash
