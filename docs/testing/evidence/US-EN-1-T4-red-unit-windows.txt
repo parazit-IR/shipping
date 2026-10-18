@@ -1,0 +1,38 @@
+# Windows, 2026-10-18T12:12:15Z (run 2026-10-18), branch feat/SLOS-127-health-endpoint at 37a0f54 + working tree (tests only)
+# command: dotnet test tests/Shipping.UnitTests/Shipping.UnitTests.csproj -c Release --no-build (after restore + Release build: 0 Warning(s), 0 Error(s))
+Test run for C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\bin\Release\net10.0\Shipping.UnitTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.53]     Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token [FAIL]
+[xUnit.net 00:00:02.60]     Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists [FAIL]
+  Failed Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token [1 s]
+  Error Message:
+   Assert.Single() Failure: The collection did not contain any matching items
+Expected:   (predicate expression)
+Collection: []
+  Stack Trace:
+     at Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\HealthEndpointCompositionTests.cs:line 26
+   at Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\HealthEndpointCompositionTests.cs:line 30
+--- End of stack trace from previous location ---
+  Failed Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists [64 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: MethodNotAllowed
+Actual:   NotFound
+  Stack Trace:
+     at Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\HealthEndpointCompositionTests.cs:line 58
+   at Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\HealthEndpointCompositionTests.cs:line 60
+--- End of stack trace from previous location ---
+[xUnit.net 00:00:02.66]     Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none [FAIL]
+  Failed Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none [65 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: ["sample-database"]
+Actual:   []
+  Stack Trace:
+     at Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\HealthEndpointCompositionTests.cs:line 41
+   at Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\HealthEndpointCompositionTests.cs:line 44
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     3, Passed:     9, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+EXIT=1

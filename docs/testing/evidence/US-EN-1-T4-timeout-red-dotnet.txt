@@ -1,0 +1,42 @@
+# runner: slos127-runner-c8415031 image=mcr.microsoft.com/dotnet/sdk:10.0.402 started 2026-10-18T12:35:05Z
+# branch: feat/SLOS-127-health-endpoint at 37a0f54 + working tree
+# command: dotnet restore Shipping.slnx && dotnet build Shipping.slnx -c Release --no-restore && dotnet test tests/Shipping.IntegrationTests/Shipping.IntegrationTests.csproj -c Release --no-build --filter FullyQualifiedName~HealthEndpointTests
+  Determining projects to restore...
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Shipping.Modules.Sample.Infrastructure.csproj (in 5.33 sec).
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Application/Shipping.Modules.Sample.Application.csproj (in 5.33 sec).
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Api/Shipping.Modules.Sample.Api.csproj (in 5.33 sec).
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Domain/Shipping.Modules.Sample.Domain.csproj (in 5.32 sec).
+  Restored /work/tests/Shipping.UnitTests/Shipping.UnitTests.csproj (in 5.92 sec).
+  Restored /work/tests/Shipping.ArchitectureTests/Shipping.ArchitectureTests.csproj (in 5.92 sec).
+  Restored /work/src/Shipping.Platform.Api/Shipping.Platform.Api.csproj (in 6.47 sec).
+  Restored /work/tests/Shipping.IntegrationTests/Shipping.IntegrationTests.csproj (in 7.42 sec).
+  Shipping.Modules.Sample.Domain -> /work/src/Modules/Sample/Shipping.Modules.Sample.Domain/bin/Release/net10.0/Shipping.Modules.Sample.Domain.dll
+  Shipping.Modules.Sample.Application -> /work/src/Modules/Sample/Shipping.Modules.Sample.Application/bin/Release/net10.0/Shipping.Modules.Sample.Application.dll
+  Shipping.Modules.Sample.Infrastructure -> /work/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/bin/Release/net10.0/Shipping.Modules.Sample.Infrastructure.dll
+  Shipping.Modules.Sample.Api -> /work/src/Modules/Sample/Shipping.Modules.Sample.Api/bin/Release/net10.0/Shipping.Modules.Sample.Api.dll
+  Shipping.Platform.Api -> /work/src/Shipping.Platform.Api/bin/Release/net10.0/Shipping.Platform.Api.dll
+  Shipping.UnitTests -> /work/tests/Shipping.UnitTests/bin/Release/net10.0/Shipping.UnitTests.dll
+  Shipping.IntegrationTests -> /work/tests/Shipping.IntegrationTests/bin/Release/net10.0/Shipping.IntegrationTests.dll
+  Shipping.ArchitectureTests -> /work/tests/Shipping.ArchitectureTests/bin/Release/net10.0/Shipping.ArchitectureTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:19.85
+Test run for /work/tests/Shipping.IntegrationTests/bin/Release/net10.0/Shipping.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:28.61]     Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_within_its_timeout_when_opening_a_connection_ignores_cancellation [FAIL]
+  Failed Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_within_its_timeout_when_opening_a_connection_ignores_cancellation [11 s]
+  Error Message:
+   Assert.InRange() Failure: Value not in range
+Range:  (00:00:00 - 00:00:04)
+Actual: 00:00:10.2095803
+  Stack Trace:
+     at Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_within_its_timeout_when_opening_a_connection_ignores_cancellation() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 108
+   at Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_within_its_timeout_when_opening_a_connection_ignores_cancellation() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 108
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     1, Passed:     3, Skipped:     0, Total:     4, Duration: 16 s - Shipping.IntegrationTests.dll (net10.0)
+EXIT=1
+# finished 2026-10-18T12:36:16Z

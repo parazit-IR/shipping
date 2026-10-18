@@ -29,7 +29,15 @@ if (string.IsNullOrWhiteSpace(databaseConnection))
 builder.Services.AddMPCoreAggregateEvents();
 builder.Services.AddSampleModule(databaseConnection);
 
+// GET /health is readiness (docs/local-environment.md): each module registers a check that its own context reaches
+// the database, and the host owns none. 200 "Healthy" when all pass, 503 "Unhealthy" otherwise. The default writer
+// returns that status word only, as MP Core's template does: no check name, host, duration or exception text.
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
+// Probes carry no token. AllowAnonymous is set here, on this endpoint only, so it stays open once an
+// authenticated fallback policy exists.
+app.MapHealthChecks("/health").WithMetadata(new HttpMethodMetadata(["GET"])).AllowAnonymous();
 app.MapSampleModule();
 await app.RunAsync();
 

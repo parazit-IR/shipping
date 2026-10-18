@@ -1,0 +1,61 @@
+# Failure-scenario verification (one-off script, not committed; isolated project shipping-smoke-t4verify, removed at the end)
+# It ran before the WaitAsync fix: section 2 shows the timeout defect it found.
+# runner: slos127-runner-9bd65763 image=mcr.microsoft.com/dotnet/sdk:10.0.402 started 2026-10-18T12:27:27Z
+# branch: feat/SLOS-127-health-endpoint at 37a0f54 + working tree
+# command: install -m755 /tools/docker /usr/local/bin/docker && mkdir -p /usr/local/libexec/docker/cli-plugins && install -m755 /tools/cli-plugins/docker-compose /tools/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/ && docker compose version && curl --version | head -n1 && bash /verify.sh
+Docker Compose version v2.33.0
+curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.10
+== up
+compose up exit 0
+api running healthy
+migrate exited
+postgres running healthy
+traefik running
+== 1. healthy stack
+12:29:17 GET /health status=404 server= body=404 page not found
+12:29:22 HEAD /health status=404 server= body=
+12:29:22 POST /health status=405 server=Kestrel body=
+12:29:22 GET /health/live status=404 server=Kestrel body=
+12:29:22 GET /sls127-unmapped status=404 server=Kestrel body=
+direct to Kestrel, inside the api container (bypassing Traefik):
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Server: Kestrel
+Cache-Control: no-store, no-cache
+Healthy
+== 2. postgres stopped
+12:29:24 GET /health status=503 server=Kestrel body=Unhealthy
+12:29:30 GET /health status= server= body=
+12:29:36 GET /health status= server= body=
+api container: running healthy
+timing of one probe while postgres is stopped:
+  000 in 10.002629s
+== 3. postgres stopped long enough for Docker to mark the api unhealthy (20 probes x 5s)
+12:31:57 api container: running unhealthy
+12:32:00 GET /health status=404 server= body=404 page not found
+== 4. postgres started again
+12:32:09 api container: running healthy
+12:32:10 GET /health status=200 server=Kestrel body=Healthy
+== 5. api process stopped
+12:32:15 GET /health status=404 server= body=404 page not found
+== 6. api started again
+12:32:28 api container: running healthy
+12:32:29 GET /health status=200 server=Kestrel body=Healthy
+== api logs (health-related, last 15)
+api-1  |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+api-1  |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+api-1  |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+api-1  |    at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in /src/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/SampleDatabaseHealthCheck.cs:line 14
+api-1  |    at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+api-1  | 2026-10-18T12:31:41.599Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[103]: Health check sample-database with status Unhealthy completed after 12002.2347ms with message '(null)'
+api-1  | 2026-10-18T12:31:54.933Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[103]: Health check sample-database with status Unhealthy completed after 10092.2483ms with message '(null)'
+api-1  | 2026-10-18T12:32:03.139Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2001.9833ms
+api-1  |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+api-1  |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+api-1  |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+api-1  |    at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in /src/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/SampleDatabaseHealthCheck.cs:line 14
+api-1  |    at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+api-1  | 2026-10-18T12:32:04.966Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[103]: Health check sample-database with status Unhealthy completed after 12020.1741ms with message '(null)'
+api-1  | Error: libgssapi_krb5.so.2: cannot open shared object file: No such file or directory
+EXIT=0
+# finished 2026-10-18T12:32:36Z

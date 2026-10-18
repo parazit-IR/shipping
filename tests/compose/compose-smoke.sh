@@ -72,6 +72,31 @@ http_through_traefik() { # host path -> prints status line and headers
   return 1
 }
 
+# One GET /health through Traefik, no retry: prints the status code, the Server header and the body, one per line.
+get_health() {
+  local response
+  response="$(curl -s -m 5 -i -H "Host: localhost" "$ENTRY/health" | tr -d '\r')"
+  head -n1 <<<"$response" | awk '{print $2}'
+  grep -i '^server:' <<<"$response" | head -n1 | cut -d' ' -f2-
+  sed '1,/^$/d' <<<"$response"
+}
+
+# Waits until GET /health through Traefik is answered with the given status by the API itself (Server: Kestrel),
+# not by Traefik. SLOS-127 (US-EN-1 T4).
+health_becomes() { # status attempts -> prints the answer
+  local expected="$1" answer=""
+  for _ in $(seq 1 "$2"); do
+    answer="$(get_health)"
+    if [[ "$(sed -n 1p <<<"$answer")" == "$expected" && "$(sed -n 2p <<<"$answer")" == [Kk]estrel ]]; then
+      echo "$answer"
+      return 0
+    fi
+    sleep 1
+  done
+  echo "GET /health through Traefik was not answered $expected by the API in $2 attempts; last: $(tr '\n' ' ' <<<"$answer")"
+  return 1
+}
+
 cleanup() {
   # Only this run's project: its containers, its network, its volume and the images it built.
   compose down -v --remove-orphans --rmi local >/dev/null 2>&1 || true
@@ -164,6 +189,12 @@ test_api_is_ready_and_running() {
   [[ "$state" == "running healthy 0" ]] || { echo "api is '$state'"; return 1; }
 }
 
+test_api_readiness_is_its_health_endpoint() {
+  local test
+  test="$(inspect api '{{json .Config.Healthcheck.Test}}')" || { echo "$test"; return 1; }
+  grep -q 'GET /health ' <<<"$test" || { echo "api health check is $test"; return 1; }
+}
+
 # --- Networking -------------------------------------------------------------------------------------------
 
 test_api_reaches_postgres_by_its_service_name() {
@@ -201,8 +232,8 @@ test_only_the_proxy_entry_point_is_published_on_the_host() {
 
 test_traefik_routes_requests_for_the_api_host_to_the_api() {
   local headers
-  # No business or health endpoint exists yet (health is SLS-15 T4): an unmapped path must come back as
-  # the API's own 404, served by Kestrel, not as a gateway error or Traefik's "no router" 404.
+  # An unmapped path must come back as the API's own 404, served by Kestrel, not as a gateway error or
+  # Traefik's "no router" 404.
   headers="$(http_through_traefik localhost /sls126-unmapped-route)" || { echo "$headers"; return 1; }
   [[ "$(head -n1 <<<"$headers" | awk '{print $2}')" == 404 ]] || { echo "status: $(head -n1 <<<"$headers")"; return 1; }
   grep -qi '^server: kestrel' <<<"$headers" || { echo "the 404 did not come from the API: $headers"; return 1; }
@@ -228,6 +259,31 @@ test_traefik_has_no_dashboard_or_api_and_a_read_only_docker_socket() {
   grep -q -- '--api' <<<"$args" && { echo "traefik api enabled: $args"; return 1; }
   socket="$(inspect traefik '{{range .Mounts}}{{if eq .Destination "/var/run/docker.sock"}}{{.RW}}{{end}}{{end}}')"
   [[ "$socket" == false ]] || { echo "docker socket mount RW=$socket"; return 1; }
+}
+
+# --- Health (SLOS-127, US-EN-1 T4) ------------------------------------------------------------------------
+
+test_health_returns_200_healthy_from_the_api_through_traefik() {
+  local answer
+  answer="$(health_becomes 200 60)" || { echo "$answer"; return 1; }
+  [[ "$(sed -n '3,$p' <<<"$answer")" == Healthy ]] || { echo "body: $(sed -n '3,$p' <<<"$answer")"; return 1; }
+}
+
+test_health_returns_503_while_postgres_is_stopped_and_200_once_it_is_back() {
+  local answer down later="" next
+  compose stop postgres >/dev/null 2>&1 || { echo "could not stop postgres"; return 1; }
+  answer="$(health_becomes 503 30)"
+  down=$?
+  # Every request while the database is gone, not only the first, must be answered by the API within curl's 5 s.
+  for _ in 1 2 3; do
+    next="$(get_health)"
+    [[ "$(sed -n 1p <<<"$next")" == 503 && "$(sed -n 2p <<<"$next")" == [Kk]estrel ]] || later="$(tr '\n' ' ' <<<"$next")"
+  done
+  compose start postgres >/dev/null 2>&1 || { echo "could not start postgres again"; return 1; }
+  [[ $down -eq 0 ]] || { echo "while postgres was stopped: $answer"; return 1; }
+  [[ "$(sed -n '3,$p' <<<"$answer")" == Unhealthy ]] || { echo "body while postgres was stopped: $(sed -n '3,$p' <<<"$answer")"; return 1; }
+  [[ -z "$later" ]] || { echo "a later request while postgres was stopped was answered '$later' (status code, server, body)"; return 1; }
+  answer="$(health_becomes 200 90)" || { echo "after postgres started again: $answer"; return 1; }
 }
 
 # --- Persistence and migrations ---------------------------------------------------------------------------
@@ -305,12 +361,15 @@ for t in \
   test_postgres_is_healthy_by_pg_isready \
   test_migrations_finish_successfully_before_the_api_starts \
   test_api_is_ready_and_running \
+  test_api_readiness_is_its_health_endpoint \
   test_api_reaches_postgres_by_its_service_name \
   test_networks_separate_the_proxy_from_the_database \
   test_only_the_proxy_entry_point_is_published_on_the_host \
   test_traefik_routes_requests_for_the_api_host_to_the_api \
   test_traefik_does_not_route_other_hosts \
   test_traefik_has_no_dashboard_or_api_and_a_read_only_docker_socket \
+  test_health_returns_200_healthy_from_the_api_through_traefik \
+  test_health_returns_503_while_postgres_is_stopped_and_200_once_it_is_back \
   test_each_module_is_migrated_through_its_own_schema_and_history \
   test_migrations_run_again_change_nothing \
   test_api_stays_running_after_the_checks \

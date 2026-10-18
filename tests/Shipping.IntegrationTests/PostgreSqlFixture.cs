@@ -29,6 +29,19 @@ public sealed class PostgreSqlFixture : IAsyncLifetime
         // No pooling: each test's database is used by that test only, and a pooled connection would outlive it.
         return new NpgsqlConnectionStringBuilder(_container.GetConnectionString()) { Database = name, Pooling = false }.ConnectionString;
     }
+
+    /// <summary>
+    /// Makes the server refuse, or accept again, every new connection to one test database: an unavailable
+    /// database for that test only, while the container keeps serving the others.
+    /// </summary>
+    public async Task AllowConnectionsAsync(string database, bool allow)
+    {
+        var name = new NpgsqlConnectionStringBuilder(database).Database;
+        await using var connection = new NpgsqlConnection(_container.GetConnectionString());
+        await connection.OpenAsync();
+        await using var alter = new NpgsqlCommand($"ALTER DATABASE \"{name}\" WITH ALLOW_CONNECTIONS {(allow ? "true" : "false")}", connection);
+        await alter.ExecuteNonQueryAsync();
+    }
 }
 
 [CollectionDefinition(Name)]

@@ -4,5 +4,7 @@
     <ProjectReference Include="../Shipping.Modules.Sample.Application/Shipping.Modules.Sample.Application.csproj" />
     <!-- EF Core and Npgsql stay in Infrastructure: MP Core's provider setup, at the version MP Core pins. -->
     <PackageReference Include="MPCore.Persistence.EntityFrameworkCore.PostgreSql" Version="0.10.1" />
+    <!-- The module's database check for the host's GET /health; not ASP.NET Core. In the Microsoft.Extensions band EF Core 10.0.11 brings. -->
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.11" />
   </ItemGroup>
 </Project>
