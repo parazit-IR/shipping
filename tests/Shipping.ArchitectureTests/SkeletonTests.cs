@@ -260,6 +260,14 @@ public class SkeletonTests
                 Assert.DoesNotContain("Shipping.Modules.Sample", contents, StringComparison.Ordinal);
                 Assert.Contains("Shipping.Modules.Verification", contents, StringComparison.Ordinal);
             }
+            // SLS-125: a generated module owns its runtime context, its unit-of-work port and the schema named after it.
+            var persistence = Path.Combine(output, "Shipping.Modules.Verification.Infrastructure", "Persistence");
+            Assert.Contains("internal sealed class VerificationDbContext",
+                File.ReadAllText(Path.Combine(persistence, "VerificationDbContext.cs")), StringComparison.Ordinal);
+            Assert.Contains("public interface IVerificationUnitOfWork : IUnitOfWork",
+                File.ReadAllText(Path.Combine(output, "Shipping.Modules.Verification.Application", "Ports", "IVerificationUnitOfWork.cs")), StringComparison.Ordinal);
+            Assert.Contains("public const string Schema = \"verification\";",
+                File.ReadAllText(Path.Combine(persistence, "VerificationPersistence.cs")), StringComparison.Ordinal);
 
             var host = Path.Combine(output, "DisposableHost");
             Directory.CreateDirectory(host);
@@ -270,7 +278,7 @@ public class SkeletonTests
             File.WriteAllText(Path.Combine(host, "Program.cs"), """
                 using Shipping.Modules.Verification.Api;
                 var builder = WebApplication.CreateBuilder(args);
-                builder.Services.AddVerificationModule();
+                builder.Services.AddVerificationModule("Host=model-only.invalid;Database=model_only");
                 var app = builder.Build();
                 app.MapVerificationModule();
                 await app.RunAsync();

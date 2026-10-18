@@ -66,6 +66,9 @@ a REST client: it does not call gRPC. For gRPC use `grpcurl` or `grpcui` against
 | Independent read store / projections | **Not available** | — |
 | TimescaleDB | **Not available** | — |
 
+In this repository: one PostgreSQL database, one schema, one runtime context and one migration history per
+module, as decided in [ADR-002](architecture/ADR-002-module-persistence.md).
+
 ## Application execution
 
 | Capability | Status | Selected by |
@@ -86,6 +89,13 @@ a REST client: it does not call gRPC. For gRPC use `grpcurl` or `grpcui` against
 | Events of a rolled-back change | never published | by construction |
 | Delivery of an event with no declared route | **Not available** | — it is dropped, not queued |
 | A second unit-of-work context in one host | **Not available** | — one transaction owner per host |
+
+**Shipping deviation ([ADR-002](architecture/ADR-002-module-persistence.md), accepted).** The row above
+describes the framework, and it still holds: MP Core has no built-in support for several unit-of-work
+contexts. Shipping does not use MP Core's single-context registration. Each module registers its own
+`MPCoreDbContext` subclass and its own `I<Module>UnitOfWork : IUnitOfWork`, and no unkeyed `IUnitOfWork` is
+bound. Writes in two modules are never one transaction. Wolverine, the outbox and idempotency are not
+installed here. Adding them must explicitly support per-module contexts.
 
 ## Reading
 

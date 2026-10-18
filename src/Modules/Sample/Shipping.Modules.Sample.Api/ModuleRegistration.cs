@@ -6,7 +6,9 @@ namespace Shipping.Modules.Sample.Api;
 
 public static class ModuleRegistration
 {
-    public static IServiceCollection AddSampleModule(this IServiceCollection services) => services.AddSampleInfrastructure();
+    /// <summary>Registers the module, with its own database context in its own schema of the given database.</summary>
+    public static IServiceCollection AddSampleModule(this IServiceCollection services, string connectionString) =>
+        services.AddSampleInfrastructure(connectionString);
 
     public static IEndpointRouteBuilder MapSampleModule(this IEndpointRouteBuilder endpoints) => endpoints;
 }

@@ -3,5 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="../Shipping.Modules.Sample.Domain/Shipping.Modules.Sample.Domain.csproj" />
     <PackageReference Include="MPCore.Application" Version="0.10.1" />
+    <!-- The module's unit-of-work port extends MP Core's IUnitOfWork; no provider type reaches Application. -->
+    <PackageReference Include="MPCore.Persistence.Abstractions" Version="0.10.1" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,9 @@
 For Shipping's four-project module structure and creation steps, follow
 `docs/architecture/ADR-001-four-project-modules.md` and the repository README. The MP Core text below
 describes the generator's default one-project layout and is retained as upstream guidance; the ADR
-records the deliberate T1 variation.
+records the deliberate T1 variation. For persistence, each module owns its runtime MP Core DbContext, its unit of work, its schema and its
+migration history, and the host owns no DbContext. This departs from the upstream text below
+([ADR-002](../../docs/architecture/ADR-002-module-persistence.md), [persistence](../../docs/persistence.md)).
 
 Create a module only from an approved and final Bounded Context. Use the repository's
 `mpcore-implement-ddd-module` skill before adding business code.
@@ -220,7 +222,9 @@ When you publish a message for another module:
    `src/<Product>.Api/Hosting/HandlerAssemblies.cs`. A module that is not listed there has no handlers and
    no validators, however complete its code looks: Wolverine discovers handlers only in the assemblies the
    host names.
-3. **Mappings.** Apply the module's EF configurations in the host's `AppDbContext`, with
+3. **Mappings.** *In Shipping (ADR-002, accepted): apply them in the module's own
+   `<Module>DbContext` only. There is no host `AppDbContext`.* Upstream text: apply the module's EF
+   configurations in the host's `AppDbContext`, with
    `ApplyConfigurationsFromAssembly(<Product>.Modules.<Context>.AssemblyReference.Assembly)`. Map every
    table of the module into a schema of its own, named after the module: `builder.ToTable("shipments",
    "shipping")`. Refer to another module's row by its identifier only, never with a foreign key: the key
