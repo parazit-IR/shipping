@@ -56,10 +56,14 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
-    # Process readiness only: Kestrel accepts connections on 8080. Application health (GET /health) is
-    # SLS-15 T4 and replaces this probe when it exists.
+    # Readiness: GET /health answers 200 only when every module reaches the database (SLOS-127). Plain bash,
+    # because the runtime image has no curl. Traefik routes only to a container whose health is healthy.
     healthcheck:
-      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      test:
+        - CMD
+        - bash
+        - -c
+        - 'exec 3<>/dev/tcp/127.0.0.1/8080 && printf "GET /health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 && read -r -t 3 status <&3 && [[ "$$status" == "HTTP/1.1 200 "* ]]'
       interval: 5s
       timeout: 3s
       retries: 20

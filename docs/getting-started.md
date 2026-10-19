@@ -35,7 +35,8 @@ maps nothing. The host needs `ConnectionStrings:PostgreSql` and stops at startup
 `dotnet user-secrets` or the `ConnectionStrings__PostgreSql` environment variable; no connection string is
 committed. The host never migrates the database. Outside Compose, apply each module's migrations as described
 in [persistence](persistence.md). `docker compose up` (T3) applies them automatically before the API starts; see
-[local environment](local-environment.md). There is still no authentication, health, or OpenAPI setup. Do not
+[local environment](local-environment.md). `GET /health` (T4) reports readiness; see
+[local environment](local-environment.md#health-endpoint). There is still no authentication or OpenAPI setup. Do not
 treat this scaffold as a deployed API.
 
 `Shipping.IntegrationTests` needs a running Docker engine: it starts PostgreSQL 17.6 through Testcontainers.
