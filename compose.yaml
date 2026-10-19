@@ -1,0 +1,103 @@
+# Shipping local development environment (SLS-126, US-EN-1 T3). Not a production deployment.
+#
+#   cp .env.example .env        # then set POSTGRES_PASSWORD
+#   docker compose up --build   # API at http://localhost:8000 through Traefik
+#   docker compose down         # keeps the database volume
+#
+# Services: postgres (the one Shipping database), migrate (applies each module's migrations, then exits),
+# api (the Shipping host, started only after migrate succeeds) and traefik (the only port on the host).
+name: shipping
+
+x-database-connection: &database-connection
+  # The Compose service name, never localhost: each container has its own loopback.
+  ConnectionStrings__PostgreSql: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-shipping};Username=${POSTGRES_USER:-shipping};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (see .env.example)}"
+
+services:
+  postgres:
+    # The version the integration tests run against (PostgreSqlFixture), compatible with Npgsql 10.
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-shipping}
+      POSTGRES_USER: ${POSTGRES_USER:-shipping}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (see .env.example)}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks: [backend]
+    # TCP, not the socket: during first initialisation the image runs a temporary server on the socket only.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  # Development only: production applies each module's bundle as a deployment step (docs/persistence.md).
+  migrate:
+    build:
+      context: .
+      target: migrator
+    environment:
+      <<: *database-connection
+    networks: [backend]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      target: api
+    environment:
+      <<: *database-connection
+      ASPNETCORE_ENVIRONMENT: Development
+    networks: [backend, edge]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    # Process readiness only: Kestrel accepts connections on 8080. Application health (GET /health) is
+    # SLS-15 T4 and replaces this probe when it exists.
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: ${COMPOSE_PROJECT_NAME}_edge
+      traefik.http.routers.shipping-api.rule: Host(`${SHIPPING_HOST:-localhost}`)
+      traefik.http.routers.shipping-api.entrypoints: web
+      traefik.http.services.shipping-api.loadbalancer.server.port: "8080"
+
+  traefik:
+    image: traefik:v3.7.15
+    command:
+      - --entrypoints.web.address=:80
+      # Only containers of this Compose project, and only those that set traefik.enable=true.
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.constraints=Label(`com.docker.compose.project`,`${COMPOSE_PROJECT_NAME}`)
+      # No dashboard or API (both off by default; not enabled here). X-Forwarded-* from clients are not
+      # trusted: no forwardedHeaders.trustedIPs or insecure, so Traefik overwrites them.
+      - --global.checkNewVersion=false
+      - --global.sendAnonymousUsage=false
+      - --log.level=INFO
+    ports:
+      # Loopback only: the environment is not reachable from other machines.
+      - "127.0.0.1:${SHIPPING_HTTP_PORT:-8000}:80"
+    volumes:
+      # Read-only bind: Traefik only reads container events and labels.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks: [edge]
+
+networks:
+  # The database network has no route out and no proxy on it.
+  backend:
+    internal: true
+  edge: {}
+
+volumes:
+  # Survives `docker compose down` and container recreation. Only `docker compose down -v` deletes it.
+  postgres-data: {}

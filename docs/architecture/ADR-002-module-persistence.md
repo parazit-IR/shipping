@@ -68,8 +68,8 @@ What MP Core 0.10.1 provides (from the package's XML docs and its compiled code)
 5. **Migrations per module:** in `Persistence/Migrations` of the module's Infrastructure project, with a
    design-time factory in the same project. As of SLS-125 nothing migrates at startup. Each module's migrations
    are a deployment step: `dotnet ef database update` locally, or one migration bundle per module. SLS-15's
-   requirement for automatic migrations in Development is not implemented here and remains open; see
-   "Constraints on future work".
+   requirement for automatic migrations in Development is not implemented here; see "Constraints on future
+   work". (SLS-126 later implemented it outside the host, in the local Compose environment.)
 6. **Boundaries:** a module's tables live only in its schema. No foreign key crosses a schema. Code outside the
    module's Infrastructure does not depend on its persistence namespace. Tests enforce all three.
 
@@ -142,5 +142,7 @@ These are binding until a later ADR replaces this one:
   they run in Development only, apply each module's migrations through its own context and history, and never
   use `EnsureCreated`. If they run inside the host, the guard test
   `Nothing_in_the_host_or_a_module_creates_or_migrates_the_database` is changed deliberately, with an ADR,
-  not deleted. See [persistence](../persistence.md#development-automatic-migrations-sls-15-requirement-not-yet-implemented).
+  not deleted. See [persistence](../persistence.md#development-automatic-migrations-sls-15). SLS-126 implements
+  this outside the host: a Compose `migrate` service runs one bundle per module before the API starts, and the
+  guard test is unchanged.
 - **Any change to this architecture requires a new ADR.**

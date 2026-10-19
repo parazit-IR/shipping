@@ -33,10 +33,10 @@ dotnet run --project src/Shipping.Platform.Api/Shipping.Platform.Api.csproj
 `AddSampleModule(databaseConnection)`, which registers Sample's own DbContext (T2), and `MapSampleModule`. `MapSampleModule` currently
 maps nothing. The host needs `ConnectionStrings:PostgreSql` and stops at startup without it. Set it with
 `dotnet user-secrets` or the `ConnectionStrings__PostgreSql` environment variable; no connection string is
-committed. The host does not migrate the database yet. Apply each module's migrations as described in
-[persistence](persistence.md). Automatic migrations in Development are an SLS-15 requirement for a later
-subtask and are not implemented in T2. There is still no authentication, health, or OpenAPI setup. Do not treat this
-scaffold as a deployed API.
+committed. The host never migrates the database. Outside Compose, apply each module's migrations as described
+in [persistence](persistence.md). `docker compose up` (T3) applies them automatically before the API starts; see
+[local environment](local-environment.md). There is still no authentication, health, or OpenAPI setup. Do not
+treat this scaffold as a deployed API.
 
 `Shipping.IntegrationTests` needs a running Docker engine: it starts PostgreSQL 17.6 through Testcontainers.
 
