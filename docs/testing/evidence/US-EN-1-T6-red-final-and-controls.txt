@@ -1,0 +1,87 @@
+# US-EN-1 T6: RED with the FINAL test files against main's documents, then positive and negative controls (post-review).
+# Script: a scratch clone of main (95fd2ec), the final WalkthroughDocumentationTests.cs and DocumentationTests.cs copied in.
+# scratch clone of /c/Users/S_cmm/shipping/shipping at 95fd2ec Merge pull request #6 from parazit-IR/feat/us-en-1-t5-readme-quickstart, 2026-10-19T06:31:34Z
+# copied the final WalkthroughDocumentationTests.cs and DocumentationTests.cs; no T6 document present
+ M tests/Shipping.ArchitectureTests/DocumentationTests.cs
+?? tests/Shipping.ArchitectureTests/WalkthroughDocumentationTests.cs
+    0 Warning(s)
+Time Elapsed 00:00:19.31
+
+## 1. Final-test RED: $ dotnet test tests/Shipping.ArchitectureTests -c Release --no-build --filter FullyQualifiedName~DocumentationTests
+  Failed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_4_creates_a_module_in_a_disposable_clone_and_never_in_the_working_checkout [2 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_1_checks_docker_then_configures_validates_starts_and_checks_health_in_order [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readiness_checklist_leaves_every_human_slot_empty [1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Runbook_has_six_demonstrations_each_with_commands_expected_results_and_recovery [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_run_no_command_that_deletes_what_they_did_not_create [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_and_evidence_name_no_invented_Jira_key [1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_agenda_is_contiguous_and_takes_60_to_90_minutes [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_2_inspects_the_schema_and_history_the_Sample_module_owns [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_claim_no_human_outcome_and_no_capability_that_is_not_built [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Onboarding_documents_do_not_describe_delivered_work_as_missing [6 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_3_runs_the_CI_commands_and_each_test_project [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_guide_links_the_runbook_the_checklist_the_evidence_and_the_canonical_guides [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_guide_has_the_parts_a_facilitator_needs [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Paths_named_in_the_onboarding_documents_exist [5 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_5_stops_and_restarts_only_postgres_and_explains_503_and_traefiks_404 [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readiness_checklist_separates_agent_verification_attendance_readiness_acceptance_and_blockers [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Onboarding_keeps_the_database_password_out_of_the_repository [22 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Every_demonstration_in_the_guide_says_what_to_expect_why_it_matters_and_how_to_recover [< 1 ms]
+  Failed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_use_curl_exe_in_powershell [< 1 ms]
+Failed!  - Failed:    19, Passed:     9, Skipped:     0, Total:    28, Duration: 578 ms - Shipping.ArchitectureTests.dll (net10.0)
+-- failure reasons:
+      1    docs/local-environment.md still says 'Team walkthrough:** SLS-15 T6.'
+      6 DirectoryNotFoundException: docs\onboarding\demo-runbook.md
+      2 DirectoryNotFoundException: docs\onboarding\team-readiness-checklist.md
+     10 DirectoryNotFoundException: docs\onboarding\team-walkthrough.md
+
+## 2. Positive control: the T6 documents, README and local-environment.md copied in
+Passed!  - Failed:     0, Passed:    28, Skipped:     0, Total:    28, Duration: 329 ms - Shipping.ArchitectureTests.dll (net10.0)
+
+## 3. Negative controls: one violation at a time, the named check must fail, then the file is restored
+- runbook command 'docker compose down -v' -> Walkthrough_documents_run_no_command_that_deletes: FAILS as it must
+       docs/onboarding/demo-runbook.md runs 'docker compose down -v'
+      Stack Trace:
+- runbook command '-p shipping-walkthrough-x down -v' (exemption is anchored) -> Walkthrough_documents_run_no_command_that_deletes: FAILS as it must
+       docs/onboarding/demo-runbook.md runs 'docker compose -p shipping-walkthrough-x down -v'
+      Stack Trace:
+- runbook command 'docker image rm shipping-api' -> Walkthrough_documents_run_no_command_that_deletes: FAILS as it must
+       docs/onboarding/demo-runbook.md runs 'docker image rm shipping-api'
+      Stack Trace:
+- checklist attendance 'Developer 1 | Alice | Yes' -> Readiness_checklist_leaves_every_human_slot_empty: FAILS as it must
+       Human slots that are already filled in:
+    Developer 1: 'Alice'
+- checklist readiness cell 'Pass' under Developer 3 -> Readiness_checklist_leaves_every_human_slot_empty: FAILS as it must
+       Human slots that are already filled in:
+    Developer 3 / 2: 'Pass'
+- checklist blocker owner prefilled -> Readiness_checklist_leaves_every_human_slot_empty: FAILS as it must
+       Human slots that are already filled in:
+    Blockers and follow-up / 1: 'Stream Lead'
+- checklist ticked box '- [x]' -> Readiness_checklist_leaves_every_human_slot_empty: FAILS as it must
+       Assert.DoesNotMatch() Failure: Match found
+                                           ↓ (pos 7117)
+- guide sentence 'The walkthrough was delivered to all five developers.' -> Walkthrough_documents_claim_no_human_outcome: FAILS as it must
+       docs/onboarding/team-walkthrough.md claims 'walkthrough was delivered'
+      Stack Trace:
+- guide sentence 'Kafka is configured for module events.' -> Walkthrough_documents_claim_no_human_outcome: FAILS as it must
+       docs/onboarding/team-walkthrough.md claims 'Kafka is configured'
+      Stack Trace:
+- evidence names an invented key 'SLS-999' -> Walkthrough_documents_and_evidence_name_no_invented_Jira_key: FAILS as it must
+       docs/testing/US-EN-1-T6-red-green.md names keys this repository does not know: SLS-999
+      Stack Trace:
+- PowerShell block with bare 'curl -i' -> Walkthrough_documents_use_curl_exe_in_powershell: FAILS as it must
+       Assert.DoesNotContain() Failure: Filter matched in collection
+                                                                                                                                                                                     ↓ (pos 40)
+
+## 4. Positive control again after restoring every file
+Passed!  - Failed:     0, Passed:    28, Skipped:     0, Total:    28, Duration: 221 ms - Shipping.ArchitectureTests.dll (net10.0)
+# scratch clone removed
+
+# Traceability (added after the re-review): git hash-object of the test files this run used, which are the files on the branch:
+#   84b32ed12b4b5035353c7dd955aa40c50f0fd382  tests/Shipping.ArchitectureTests/WalkthroughDocumentationTests.cs
+#   714a2954fe0ccadaa43d1c63d68a5ad153a081c4  tests/Shipping.ArchitectureTests/DocumentationTests.cs
+# An earlier attempt of this script, before the Commands helper existed, was not kept as a file. Its result, as printed
+# in the session: final-test RED 19 failed / 9 passed (as above); positive control 2 failed / 26 passed:
+#   Walkthrough_documents_run_no_command_that_deletes_what_they_did_not_create: runs '$ docker compose -p shipping-walkthrough down -v --rmi local'
+#     (an expected-output line in a text block; the '$ ' prompt defeated the anchored exemption)
+#   Relative_markdown_links_resolve_to_files_and_headings: the anchor #github-and-mp-core-checks did not exist yet
+# Its three deletion negative controls therefore failed for the baseline reason and proved nothing; the run above replaces them.
