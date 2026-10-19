@@ -1,0 +1,290 @@
+### Attempt 1: clone of main, the module steps as previously documented (glob; no build before dotnet ef)
+
+$ dotnet new install ./templates/Module
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\t5-modA\repo\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\t5-modA\repo\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0]
+
+$ dotnet new shipping-module --name Booking --output src/Modules/Booking
+The template "Shipping four-project module" was created successfully.
+
+[exit 0]
+
+$ dotnet sln Shipping.slnx add src/Modules/Booking/Shipping.Modules.Booking.*/*.csproj
+Project `src\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Application\Shipping.Modules.Booking.Application.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Domain\Shipping.Modules.Booking.Domain.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\Shipping.Modules.Booking.Infrastructure.csproj` added to the solution.
+Solution C:\Users\S_cmm\AppData\Local\Temp\2\t5-modA\repo\Shipping.slnx already contains project src\Modules\Booking\Shipping.Modules.Booking.Application\Shipping.Modules.Booking.Application.csproj.
+Solution C:\Users\S_cmm\AppData\Local\Temp\2\t5-modA\repo\Shipping.slnx already contains project src\Modules\Booking\Shipping.Modules.Booking.Domain\Shipping.Modules.Booking.Domain.csproj.
+Solution C:\Users\S_cmm\AppData\Local\Temp\2\t5-modA\repo\Shipping.slnx already contains project src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\Shipping.Modules.Booking.Infrastructure.csproj.
+[exit 0]
+
+$ dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Booking/Shipping.Modules.Booking.Api/Shipping.Modules.Booking.Api.csproj
+Reference `..\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj` added to the project.
+[exit 0]
+
+Program.cs registration lines:
+4:using Shipping.Modules.Sample.Api;
+5:using Shipping.Modules.Booking.Api;
+31:builder.Services.AddSampleModule(databaseConnection);
+32:builder.Services.AddBookingModule(databaseConnection);
+43:app.MapSampleModule();
+44:app.MapBookingModule();
+
+$ dotnet tool restore
+Tool 'dotnet-ef' (version '10.0.11') was restored. Available commands: dotnet-ef
+
+A newer version of tool 'dotnet-ef' is available (version '10.0.13'). Consider updating your manifest file.
+
+Restore was successful.
+[exit 0]
+
+$ dotnet ef migrations add Baseline --project src/Modules/Booking/Shipping.Modules.Booking.Infrastructure --startup-project src/Shipping.Platform.Api --context BookingDbContext --output-dir Persistence/Migrations
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1004: Assets file 'C:\Users\S_cmm\AppData\Local\Temp\2\t5-modA\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\obj\project.assets.json' not found. Run a NuGet package restore to generate this file. [C:\Users\S_cmm\AppData\Local\Temp\2\t5-modA\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\Shipping.Modules.Booking.Infrastructure.csproj]
+Unable to retrieve project metadata. Ensure it's an SDK-style project.
+[exit 1]
+
+### Attempt 2: clone of main, the README steps
+
+$ dotnet new install ./templates/Module
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0]
+
+$ dotnet new shipping-module --name Booking --output src/Modules/Booking
+The template "Shipping four-project module" was created successfully.
+
+[exit 0]
+
+$ dotnet sln Shipping.slnx add src/Modules/Booking/Shipping.Modules.Booking.Api/Shipping.Modules.Booking.Api.csproj
+Project `src\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Application\Shipping.Modules.Booking.Application.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Domain\Shipping.Modules.Booking.Domain.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\Shipping.Modules.Booking.Infrastructure.csproj` added to the solution.
+[exit 0]
+Booking projects in Shipping.slnx: 4
+
+$ dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Booking/Shipping.Modules.Booking.Api/Shipping.Modules.Booking.Api.csproj
+Reference `..\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj` added to the project.
+[exit 0]
+
+Program.cs registration lines:
+4:using Shipping.Modules.Sample.Api;
+5:using Shipping.Modules.Booking.Api;
+31:builder.Services.AddSampleModule(databaseConnection);
+32:builder.Services.AddBookingModule(databaseConnection);
+43:app.MapSampleModule();
+44:app.MapBookingModule();
+
+$ dotnet build Shipping.slnx
+  Determining projects to restore...
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Domain\Shipping.Modules.Sample.Domain.csproj (in 1.57 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj (in 1.57 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Api\Shipping.Modules.Sample.Api.csproj (in 1.57 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Domain\Shipping.Modules.Booking.Domain.csproj (in 1.67 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Application\Shipping.Modules.Sample.Application.csproj (in 1.42 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Application\Shipping.Modules.Booking.Application.csproj (in 3 ms).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\Shipping.Modules.Booking.Infrastructure.csproj (in 1.09 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Shipping.Modules.Sample.Infrastructure.csproj (in 3.03 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.UnitTests\Shipping.UnitTests.csproj (in 5.94 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.ArchitectureTests\Shipping.ArchitectureTests.csproj (in 5.38 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.IntegrationTests\Shipping.IntegrationTests.csproj (in 8.53 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Shipping.Platform.Api\Shipping.Platform.Api.csproj (in 8.25 sec).
+  Shipping.Modules.Sample.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Domain\bin\Debug\net10.0\Shipping.Modules.Sample.Domain.dll
+  Shipping.Modules.Booking.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Domain\bin\Debug\net10.0\Shipping.Modules.Booking.Domain.dll
+  Shipping.Modules.Sample.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Application\bin\Debug\net10.0\Shipping.Modules.Sample.Application.dll
+  Shipping.Modules.Booking.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Application\bin\Debug\net10.0\Shipping.Modules.Booking.Application.dll
+  Shipping.Modules.Sample.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\bin\Debug\net10.0\Shipping.Modules.Sample.Infrastructure.dll
+  Shipping.Modules.Booking.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\bin\Debug\net10.0\Shipping.Modules.Booking.Infrastructure.dll
+  Shipping.Modules.Sample.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Api\bin\Debug\net10.0\Shipping.Modules.Sample.Api.dll
+  Shipping.Modules.Booking.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Api\bin\Debug\net10.0\Shipping.Modules.Booking.Api.dll
+  Shipping.Platform.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Shipping.Platform.Api\bin\Debug\net10.0\Shipping.Platform.Api.dll
+  Shipping.UnitTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.UnitTests\bin\Debug\net10.0\Shipping.UnitTests.dll
+  Shipping.IntegrationTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.IntegrationTests\bin\Debug\net10.0\Shipping.IntegrationTests.dll
+  Shipping.ArchitectureTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.ArchitectureTests\bin\Debug\net10.0\Shipping.ArchitectureTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:23.12
+[exit 0]
+
+$ dotnet tool restore
+Tool 'dotnet-ef' (version '10.0.11') was restored. Available commands: dotnet-ef
+
+A newer version of tool 'dotnet-ef' is available (version '10.0.13'). Consider updating your manifest file.
+
+Restore was successful.
+[exit 0]
+
+$ dotnet ef migrations add Baseline --project src/Modules/Booking/Shipping.Modules.Booking.Infrastructure --startup-project src/Shipping.Platform.Api --context BookingDbContext --output-dir Persistence/Migrations
+Build started...
+Build succeeded.
+Done. To undo this action, use 'ef migrations remove'
+[exit 0]
+20261019050559_Baseline.cs
+20261019050559_Baseline.Designer.cs
+BookingDbContextModelSnapshot.cs
+
+$ dotnet build Shipping.slnx -c Release
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Shipping.Modules.Sample.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Domain\bin\Release\net10.0\Shipping.Modules.Sample.Domain.dll
+  Shipping.Modules.Booking.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Domain\bin\Release\net10.0\Shipping.Modules.Booking.Domain.dll
+  Shipping.Modules.Booking.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Application\bin\Release\net10.0\Shipping.Modules.Booking.Application.dll
+  Shipping.Modules.Sample.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Application\bin\Release\net10.0\Shipping.Modules.Sample.Application.dll
+  Shipping.Modules.Sample.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\bin\Release\net10.0\Shipping.Modules.Sample.Infrastructure.dll
+  Shipping.Modules.Booking.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\bin\Release\net10.0\Shipping.Modules.Booking.Infrastructure.dll
+  Shipping.Modules.Sample.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Sample\Shipping.Modules.Sample.Api\bin\Release\net10.0\Shipping.Modules.Sample.Api.dll
+  Shipping.Modules.Booking.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Modules\Booking\Shipping.Modules.Booking.Api\bin\Release\net10.0\Shipping.Modules.Booking.Api.dll
+  Shipping.Platform.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\src\Shipping.Platform.Api\bin\Release\net10.0\Shipping.Platform.Api.dll
+  Shipping.UnitTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.UnitTests\bin\Release\net10.0\Shipping.UnitTests.dll
+  Shipping.IntegrationTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.IntegrationTests\bin\Release\net10.0\Shipping.IntegrationTests.dll
+  Shipping.ArchitectureTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modB\repo\tests\Shipping.ArchitectureTests\bin\Release\net10.0\Shipping.ArchitectureTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:07.43
+[exit 0]
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 14 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 40 s - Shipping.ArchitectureTests.dll (net10.0)
+[test exit 0]
+
+### Attempt 3: this branch's working tree (README and DocumentationTests included), the README steps with the literal example name Booking
+branch feat/us-en-1-t5-readme-quickstart, HEAD a75aab5, working-tree changes: 11
+
+$ dotnet new install ./templates/Module
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0]
+
+$ dotnet new shipping-module --name Booking --output src/Modules/Booking
+The template "Shipping four-project module" was created successfully.
+
+[exit 0]
+
+$ dotnet sln Shipping.slnx add src/Modules/Booking/Shipping.Modules.Booking.Api/Shipping.Modules.Booking.Api.csproj
+Project `src\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Application\Shipping.Modules.Booking.Application.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Domain\Shipping.Modules.Booking.Domain.csproj` added to the solution.
+Project `src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\Shipping.Modules.Booking.Infrastructure.csproj` added to the solution.
+[exit 0]
+Booking projects in Shipping.slnx: 4
+
+$ dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Booking/Shipping.Modules.Booking.Api/Shipping.Modules.Booking.Api.csproj
+Reference `..\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj` added to the project.
+[exit 0]
+
+Program.cs registration lines:
+4:using Shipping.Modules.Sample.Api;
+5:using Shipping.Modules.Booking.Api;
+31:builder.Services.AddSampleModule(databaseConnection);
+32:builder.Services.AddBookingModule(databaseConnection);
+43:app.MapSampleModule();
+44:app.MapBookingModule();
+
+$ dotnet build Shipping.slnx
+  Determining projects to restore...
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Domain\Shipping.Modules.Sample.Domain.csproj (in 1.01 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Domain\Shipping.Modules.Booking.Domain.csproj (in 981 ms).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Application\Shipping.Modules.Sample.Application.csproj (in 1.48 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Application\Shipping.Modules.Booking.Application.csproj (in 1.73 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Api\Shipping.Modules.Booking.Api.csproj (in 1.83 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Api\Shipping.Modules.Sample.Api.csproj (in 6 ms).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Shipping.Modules.Sample.Infrastructure.csproj (in 1.35 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\Shipping.Modules.Booking.Infrastructure.csproj (in 3.25 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.IntegrationTests\Shipping.IntegrationTests.csproj (in 3.9 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.UnitTests\Shipping.UnitTests.csproj (in 3.9 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.ArchitectureTests\Shipping.ArchitectureTests.csproj (in 1.96 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Shipping.Platform.Api\Shipping.Platform.Api.csproj (in 6.75 sec).
+  Shipping.Modules.Sample.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Domain\bin\Debug\net10.0\Shipping.Modules.Sample.Domain.dll
+  Shipping.Modules.Booking.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Domain\bin\Debug\net10.0\Shipping.Modules.Booking.Domain.dll
+  Shipping.Modules.Sample.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Application\bin\Debug\net10.0\Shipping.Modules.Sample.Application.dll
+  Shipping.Modules.Booking.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Application\bin\Debug\net10.0\Shipping.Modules.Booking.Application.dll
+  Shipping.Modules.Sample.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\bin\Debug\net10.0\Shipping.Modules.Sample.Infrastructure.dll
+  Shipping.Modules.Booking.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\bin\Debug\net10.0\Shipping.Modules.Booking.Infrastructure.dll
+  Shipping.Modules.Booking.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Api\bin\Debug\net10.0\Shipping.Modules.Booking.Api.dll
+  Shipping.Modules.Sample.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Api\bin\Debug\net10.0\Shipping.Modules.Sample.Api.dll
+  Shipping.Platform.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Shipping.Platform.Api\bin\Debug\net10.0\Shipping.Platform.Api.dll
+  Shipping.IntegrationTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.IntegrationTests\bin\Debug\net10.0\Shipping.IntegrationTests.dll
+  Shipping.UnitTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.UnitTests\bin\Debug\net10.0\Shipping.UnitTests.dll
+  Shipping.ArchitectureTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.ArchitectureTests\bin\Debug\net10.0\Shipping.ArchitectureTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:20.05
+[exit 0]
+
+$ dotnet tool restore
+Tool 'dotnet-ef' (version '10.0.11') was restored. Available commands: dotnet-ef
+
+A newer version of tool 'dotnet-ef' is available (version '10.0.13'). Consider updating your manifest file.
+
+Restore was successful.
+[exit 0]
+
+$ dotnet ef migrations add Baseline --project src/Modules/Booking/Shipping.Modules.Booking.Infrastructure --startup-project src/Shipping.Platform.Api --context BookingDbContext --output-dir Persistence/Migrations
+Build started...
+Build succeeded.
+Done. To undo this action, use 'ef migrations remove'
+[exit 0]
+20261019052200_Baseline.cs
+20261019052200_Baseline.Designer.cs
+BookingDbContextModelSnapshot.cs
+
+$ dotnet build Shipping.slnx -c Release
+  Determining projects to restore...
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Application\Shipping.Modules.Sample.Application.csproj (in 401 ms).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Domain\Shipping.Modules.Sample.Domain.csproj (in 402 ms).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Shipping.Modules.Sample.Infrastructure.csproj (in 407 ms).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Api\Shipping.Modules.Sample.Api.csproj (in 401 ms).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Shipping.Platform.Api\Shipping.Platform.Api.csproj (in 420 ms).
+  7 of 12 projects are up-to-date for restore.
+  Shipping.Modules.Booking.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Domain\bin\Release\net10.0\Shipping.Modules.Booking.Domain.dll
+  Shipping.Modules.Sample.Domain -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Domain\bin\Release\net10.0\Shipping.Modules.Sample.Domain.dll
+  Shipping.Modules.Sample.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Application\bin\Release\net10.0\Shipping.Modules.Sample.Application.dll
+  Shipping.Modules.Booking.Application -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Application\bin\Release\net10.0\Shipping.Modules.Booking.Application.dll
+  Shipping.Modules.Booking.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Infrastructure\bin\Release\net10.0\Shipping.Modules.Booking.Infrastructure.dll
+  Shipping.Modules.Sample.Infrastructure -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\bin\Release\net10.0\Shipping.Modules.Sample.Infrastructure.dll
+  Shipping.Modules.Sample.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Sample\Shipping.Modules.Sample.Api\bin\Release\net10.0\Shipping.Modules.Sample.Api.dll
+  Shipping.Modules.Booking.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Modules\Booking\Shipping.Modules.Booking.Api\bin\Release\net10.0\Shipping.Modules.Booking.Api.dll
+  Shipping.Platform.Api -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\src\Shipping.Platform.Api\bin\Release\net10.0\Shipping.Platform.Api.dll
+  Shipping.UnitTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.UnitTests\bin\Release\net10.0\Shipping.UnitTests.dll
+  Shipping.IntegrationTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.IntegrationTests\bin\Release\net10.0\Shipping.IntegrationTests.dll
+  Shipping.ArchitectureTests -> C:\Users\S_cmm\AppData\Local\Temp\2\t5-modC\repo\tests\Shipping.ArchitectureTests\bin\Release\net10.0\Shipping.ArchitectureTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:07.52
+[exit 0]
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 13 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 31 s - Shipping.ArchitectureTests.dll (net10.0)
+[test exit 0]

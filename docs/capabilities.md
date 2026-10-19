@@ -236,5 +236,6 @@ later is a manual, documented change — see the table in [getting-started.md](g
 ## Adding a capability later
 
 `mpcore configure` changes what it can change safely and refuses the rest with the reasoning. See
-[changing these settings](getting-started.md#changing-these-settings-later). A capability marked
+[later work](getting-started.md#later-work): in this repository, changing a recorded setting is a scope change
+for the owner. A capability marked
 *Not available* cannot be added by a flag, because it does not exist in the framework yet.

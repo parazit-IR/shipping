@@ -1,0 +1,187 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Shipping.Modules.Sample.Domain -> C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Domain\bin\Release\net10.0\Shipping.Modules.Sample.Domain.dll
+  Shipping.Modules.Sample.Application -> C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Application\bin\Release\net10.0\Shipping.Modules.Sample.Application.dll
+  Shipping.Modules.Sample.Infrastructure -> C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\bin\Release\net10.0\Shipping.Modules.Sample.Infrastructure.dll
+  Shipping.Modules.Sample.Api -> C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Api\bin\Release\net10.0\Shipping.Modules.Sample.Api.dll
+  Shipping.Platform.Api -> C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api\bin\Release\net10.0\Shipping.Platform.Api.dll
+  Shipping.ArchitectureTests -> C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\bin\Release\net10.0\Shipping.ArchitectureTests.dll
+Test run for C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\bin\Release\net10.0\Shipping.ArchitectureTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.10)
+[xUnit.net 00:00:00.13]   Discovering: Shipping.ArchitectureTests
+[xUnit.net 00:00:00.19]   Discovered:  Shipping.ArchitectureTests
+[xUnit.net 00:00:00.22]   Starting:    Shipping.ArchitectureTests
+[xUnit.net 00:00:00.29]     Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_runs_clone_configure_validate_start_check_and_stop_in_order [FAIL]
+[xUnit.net 00:00:00.29]       no '## Quickstart' heading
+[xUnit.net 00:00:00.29]       Stack Trace:
+[xUnit.net 00:00:00.29]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(252,0): at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level)
+[xUnit.net 00:00:00.29]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(32,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_runs_clone_configure_validate_start_check_and_stop_in_order()
+[xUnit.net 00:00:00.29]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.29]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.31]     Shipping.ArchitectureTests.DocumentationTests.Readme_has_the_onboarding_sections_with_the_quickstart_before_the_dotnet_workflow [FAIL]
+[xUnit.net 00:00:00.31]       README has no '## Prerequisites' section; it has: Build and test, Run locally with Docker Compose, Create a module
+[xUnit.net 00:00:00.31]       Stack Trace:
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(25,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_has_the_onboarding_sections_with_the_quickstart_before_the_dotnet_workflow()
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.31]     Shipping.ArchitectureTests.DocumentationTests.Readme_build_and_test_commands_are_the_ones_CI_runs [FAIL]
+[xUnit.net 00:00:00.31]       README 'Build and test' does not show 'bash tests/compose/compose-smoke.sh'
+[xUnit.net 00:00:00.31]       Stack Trace:
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(102,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_build_and_test_commands_are_the_ones_CI_runs()
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.31]     Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_waits_and_retries_for_a_bounded_time_against_the_port_and_host_compose_publishes [FAIL]
+[xUnit.net 00:00:00.31]       no '## Quickstart' heading
+[xUnit.net 00:00:00.31]       Stack Trace:
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(252,0): at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level)
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(66,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_waits_and_retries_for_a_bounded_time_against_the_port_and_host_compose_publishes()
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.31]     Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_stops_the_environment_without_deleting_the_database_volume [FAIL]
+[xUnit.net 00:00:00.31]       no '## Quickstart' heading
+[xUnit.net 00:00:00.31]       Stack Trace:
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(252,0): at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level)
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(82,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_stops_the_environment_without_deleting_the_database_volume()
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.31]     Shipping.ArchitectureTests.DocumentationTests.Readme_windows_alternatives_use_powershell_commands_and_curl_exe [FAIL]
+[xUnit.net 00:00:00.31]       Assert.Contains() Failure: Item not found in collection
+[xUnit.net 00:00:00.31]       Collection: []
+[xUnit.net 00:00:00.31]       Not found:  "Copy-Item .env.example .env"
+[xUnit.net 00:00:00.31]       Stack Trace:
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(148,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_windows_alternatives_use_powershell_commands_and_curl_exe()
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.31]     Shipping.ArchitectureTests.DocumentationTests.Readme_module_instructions_match_the_template_and_the_host [FAIL]
+[xUnit.net 00:00:00.31]       Assert.Contains() Failure: Item not found in collection
+[xUnit.net 00:00:00.31]       Collection: ["dotnet new install ./templates/Module", "dotnet new shipping-module --name Probe --output s"···, "dotnet sln Shipping.slnx add src/Modules/Probe/Shi"···]
+[xUnit.net 00:00:00.31]       Not found:  "dotnet new shipping-module --name Booking --output"···
+[xUnit.net 00:00:00.31]       Stack Trace:
+[xUnit.net 00:00:00.31]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(116,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_module_instructions_match_the_template_and_the_host()
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.31]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.45]     Shipping.ArchitectureTests.DocumentationTests.Relative_markdown_links_resolve_to_files_and_headings [FAIL]
+[xUnit.net 00:00:00.45]       Broken links:
+[xUnit.net 00:00:00.45]       docs/capabilities.md: getting-started.md#changing-these-settings-later (no such heading)
+[xUnit.net 00:00:00.45]       Stack Trace:
+[xUnit.net 00:00:00.45]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(232,0): at Shipping.ArchitectureTests.DocumentationTests.Relative_markdown_links_resolve_to_files_and_headings()
+[xUnit.net 00:00:00.45]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.45]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.45]     Shipping.ArchitectureTests.DocumentationTests.Onboarding_documents_do_not_describe_delivered_work_as_missing [FAIL]
+[xUnit.net 00:00:00.45]       README.md still says 'no health endpoint'
+[xUnit.net 00:00:00.45]       Stack Trace:
+[xUnit.net 00:00:00.45]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(187,0): at Shipping.ArchitectureTests.DocumentationTests.Onboarding_documents_do_not_describe_delivered_work_as_missing()
+[xUnit.net 00:00:00.45]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.45]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_runs_clone_configure_validate_start_check_and_stop_in_order [8 ms]
+  Error Message:
+   no '## Quickstart' heading
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level) in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 252
+   at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_runs_clone_configure_validate_start_check_and_stop_in_order() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 32
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_has_the_onboarding_sections_with_the_quickstart_before_the_dotnet_workflow [1 ms]
+  Error Message:
+   README has no '## Prerequisites' section; it has: Build and test, Run locally with Docker Compose, Create a module
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Readme_has_the_onboarding_sections_with_the_quickstart_before_the_dotnet_workflow() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 25
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_build_and_test_commands_are_the_ones_CI_runs [5 ms]
+  Error Message:
+   README 'Build and test' does not show 'bash tests/compose/compose-smoke.sh'
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Readme_build_and_test_commands_are_the_ones_CI_runs() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 102
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_waits_and_retries_for_a_bounded_time_against_the_port_and_host_compose_publishes [2 ms]
+  Error Message:
+   no '## Quickstart' heading
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level) in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 252
+   at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_waits_and_retries_for_a_bounded_time_against_the_port_and_host_compose_publishes() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 66
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_stops_the_environment_without_deleting_the_database_volume [< 1 ms]
+  Error Message:
+   no '## Quickstart' heading
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level) in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 252
+   at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_stops_the_environment_without_deleting_the_database_volume() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 82
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_windows_alternatives_use_powershell_commands_and_curl_exe [6 ms]
+  Error Message:
+   Assert.Contains() Failure: Item not found in collection
+Collection: []
+Not found:  "Copy-Item .env.example .env"
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Readme_windows_alternatives_use_powershell_commands_and_curl_exe() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 148
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_module_instructions_match_the_template_and_the_host [7 ms]
+  Error Message:
+   Assert.Contains() Failure: Item not found in collection
+Collection: ["dotnet new install ./templates/Module", "dotnet new shipping-module --name Probe --output s"···, "dotnet sln Shipping.slnx add src/Modules/Probe/Shi"···]
+Not found:  "dotnet new shipping-module --name Booking --output"···
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Readme_module_instructions_match_the_template_and_the_host() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 116
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Relative_markdown_links_resolve_to_files_and_headings [139 ms]
+  Error Message:
+   Broken links:
+docs/capabilities.md: getting-started.md#changing-these-settings-later (no such heading)
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Relative_markdown_links_resolve_to_files_and_headings() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 232
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Onboarding_documents_do_not_describe_delivered_work_as_missing [1 ms]
+  Error Message:
+   README.md still says 'no health endpoint'
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Onboarding_documents_do_not_describe_delivered_work_as_missing() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 187
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.48]     Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_needs_no_dotnet_sdk [FAIL]
+[xUnit.net 00:00:00.48]       no '## Quickstart' heading
+[xUnit.net 00:00:00.48]       Stack Trace:
+[xUnit.net 00:00:00.48]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(252,0): at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level)
+[xUnit.net 00:00:00.48]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(55,0): at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_needs_no_dotnet_sdk()
+[xUnit.net 00:00:00.48]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.48]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.48]     Shipping.ArchitectureTests.DocumentationTests.Paths_named_in_the_onboarding_documents_exist [FAIL]
+[xUnit.net 00:00:00.48]       Paths that do not exist:
+[xUnit.net 00:00:00.48]       docs/local-environment.md: `text/plain`
+[xUnit.net 00:00:00.48]       docs/local-environment.md: `compose.override.yml`
+[xUnit.net 00:00:00.48]       Stack Trace:
+[xUnit.net 00:00:00.48]         C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs(205,0): at Shipping.ArchitectureTests.DocumentationTests.Paths_named_in_the_onboarding_documents_exist()
+[xUnit.net 00:00:00.48]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.48]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.49]   Finished:    Shipping.ArchitectureTests
+  Failed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_needs_no_dotnet_sdk [< 1 ms]
+  Error Message:
+   no '## Quickstart' heading
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Section(String markdown, String heading, Int32 level) in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 252
+   at Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_needs_no_dotnet_sdk() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 55
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Shipping.ArchitectureTests.DocumentationTests.Paths_named_in_the_onboarding_documents_exist [6 ms]
+  Error Message:
+   Paths that do not exist:
+docs/local-environment.md: `text/plain`
+docs/local-environment.md: `compose.override.yml`
+  Stack Trace:
+     at Shipping.ArchitectureTests.DocumentationTests.Paths_named_in_the_onboarding_documents_exist() in C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\DocumentationTests.cs:line 205
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Shipping.ArchitectureTests.DocumentationTests.Onboarding_keeps_the_database_password_out_of_the_repository [4 ms]
+
+Test Run Failed.
+Total tests: 12
+     Passed: 1
+     Failed: 11
+ Total time: 1.6033 Seconds

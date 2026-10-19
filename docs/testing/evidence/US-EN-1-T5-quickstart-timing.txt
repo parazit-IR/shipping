@@ -1,0 +1,570 @@
+### Attempt 1 (deep directory; stopped at git clone)
+== run 1: cold build cache (no .NET/Traefik images, postgres:17.6-alpine cached)
+start: 2026-10-19T04:59:20Z
+os: MINGW64_NT-10.0-26100 GIT-AE-SRV-RDT1 3.6.9-b4195d69.x86_64 2026-06-06 17:49 UTC x86_64 Msys
+docker client 27.5.1, server 27.5.1 (linux/amd64)
+Docker Compose version v2.32.4
+
+$ git clone https://github.com/parazit-IR/shipping.git
+Cloning into 'shipping'...
+error: unable to create file src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/Migrations/20261015081705_Baseline.Designer.cs: Filename too long
+fatal: unable to checkout working tree
+warning: Clone succeeded, but checkout failed.
+You can inspect what was checked out with 'git status'
+and retry with 'git restore --source=HEAD :/'
+
+[exit 128, 2 s, elapsed 3 s]
+
+### Run 1: cold cache
+== run 1: cold build cache (no .NET/Traefik images, postgres:17.6-alpine cached)
+start: 2026-10-19T04:59:45Z
+os: MINGW64_NT-10.0-26100 GIT-AE-SRV-RDT1 3.6.9-b4195d69.x86_64 2026-06-06 17:49 UTC x86_64 Msys
+docker client 27.5.1, server 27.5.1 (linux/amd64)
+Docker Compose version v2.32.4
+
+$ git clone https://github.com/parazit-IR/shipping.git
+Cloning into 'shipping'...
+[exit 0, 2 s, elapsed 3 s]
+commit: a75aab5
+
+$ cp .env.example .env
+[exit 0, 1 s, elapsed 4 s]
+
+$ sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env
+[exit 0, 0 s]
+password lines set: 1
+
+$ docker compose config --quiet
+[exit 0, 0 s, elapsed 5 s]
+
+$ docker compose up --build -d --wait --wait-timeout 300
+ traefik Pulling
+ e2de96513ba9 Pulling fs layer
+ 5fb72a3619ab Pulling fs layer
+ 3b5b821dc1e5 Pulling fs layer
+ f71da154c577 Pulling fs layer
+ f71da154c577 Waiting
+ 5fb72a3619ab Downloading [=>                                                 ]  16.38kB/416.3kB
+ e2de96513ba9 Downloading [>                                                  ]  48.55kB/3.85MB
+ 5fb72a3619ab Download complete
+ 3b5b821dc1e5 Downloading [>                                                  ]  515.5kB/51.12MB
+ e2de96513ba9 Verifying Checksum
+ e2de96513ba9 Download complete
+ e2de96513ba9 Extracting [>                                                  ]  65.54kB/3.85MB
+ 3b5b821dc1e5 Downloading [=======>                                           ]  7.718MB/51.12MB
+ e2de96513ba9 Extracting [============>                                      ]    983kB/3.85MB
+ 3b5b821dc1e5 Downloading [===============>                                   ]  15.48MB/51.12MB
+ e2de96513ba9 Extracting [=========================>                         ]  1.966MB/3.85MB
+ 3b5b821dc1e5 Downloading [========================>                          ]  25.32MB/51.12MB
+ e2de96513ba9 Extracting [================================================>  ]  3.736MB/3.85MB
+ e2de96513ba9 Extracting [==================================================>]   3.85MB/3.85MB
+ e2de96513ba9 Extracting [==================================================>]   3.85MB/3.85MB
+ 3b5b821dc1e5 Downloading [===================================>               ]  36.25MB/51.12MB
+ e2de96513ba9 Pull complete
+ 5fb72a3619ab Extracting [===>                                               ]  32.77kB/416.3kB
+ 3b5b821dc1e5 Downloading [==============================================>    ]  47.17MB/51.12MB
+ 3b5b821dc1e5 Verifying Checksum
+ 3b5b821dc1e5 Download complete
+ 5fb72a3619ab Extracting [===============================================>   ]  393.2kB/416.3kB
+ 5fb72a3619ab Extracting [==================================================>]  416.3kB/416.3kB
+ 5fb72a3619ab Extracting [==================================================>]  416.3kB/416.3kB
+ f71da154c577 Download complete
+ 5fb72a3619ab Pull complete
+ 3b5b821dc1e5 Extracting [>                                                  ]  524.3kB/51.12MB
+ 3b5b821dc1e5 Extracting [====>                                              ]  4.194MB/51.12MB
+ 3b5b821dc1e5 Extracting [=======>                                           ]   7.34MB/51.12MB
+ 3b5b821dc1e5 Extracting [===========>                                       ]  11.53MB/51.12MB
+ 3b5b821dc1e5 Extracting [=============>                                     ]  14.16MB/51.12MB
+ 3b5b821dc1e5 Extracting [================>                                  ]  16.78MB/51.12MB
+ 3b5b821dc1e5 Extracting [=================>                                 ]  18.35MB/51.12MB
+ 3b5b821dc1e5 Extracting [===================>                               ]  20.45MB/51.12MB
+ 3b5b821dc1e5 Extracting [=======================>                           ]  23.59MB/51.12MB
+ 3b5b821dc1e5 Extracting [==========================>                        ]  27.26MB/51.12MB
+ 3b5b821dc1e5 Extracting [============================>                      ]  29.36MB/51.12MB
+ 3b5b821dc1e5 Extracting [================================>                  ]  33.03MB/51.12MB
+ 3b5b821dc1e5 Extracting [=================================>                 ]  34.08MB/51.12MB
+ 3b5b821dc1e5 Extracting [==================================>                ]  35.13MB/51.12MB
+ 3b5b821dc1e5 Extracting [=======================================>           ]  40.89MB/51.12MB
+ 3b5b821dc1e5 Extracting [============================================>      ]  45.61MB/51.12MB
+ 3b5b821dc1e5 Extracting [===============================================>   ]  48.23MB/51.12MB
+ 3b5b821dc1e5 Extracting [=================================================> ]  50.33MB/51.12MB
+ 3b5b821dc1e5 Extracting [==================================================>]  51.12MB/51.12MB
+ 3b5b821dc1e5 Pull complete
+ f71da154c577 Extracting [==================================================>]     370B/370B
+ f71da154c577 Extracting [==================================================>]     370B/370B
+ f71da154c577 Pull complete
+ traefik Pulled
+#0 building with "default" instance using docker driver
+
+#1 [migrate internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.02kB 0.1s done
+#1 DONE 0.2s
+
+#2 [migrate] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 2.2s
+
+#3 [migrate] docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#3 DONE 1.3s
+
+#4 [migrate internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0.13
+#4 DONE 1.2s
+
+#5 [migrate internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0.402
+#5 DONE 1.2s
+
+#6 [migrate internal] load .dockerignore
+#6 transferring context:
+#6 transferring context: 419B 0.1s done
+#6 DONE 0.2s
+
+#7 [migrate internal] load build context
+#7 DONE 0.0s
+
+#8 [migrate build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+#8 resolve mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa 0.1s done
+#8 ...
+
+#7 [migrate internal] load build context
+#7 transferring context: 44.70kB 0.2s done
+#7 DONE 0.4s
+
+#8 [migrate build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+#8 ...
+
+#9 [migrate migrator 1/3] FROM mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac
+#9 resolve mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac 0.1s done
+#9 DONE 7.3s
+
+#8 [migrate build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+#8 ...
+
+#10 [migrate migrator 2/3] WORKDIR /migrations
+#10 DONE 0.8s
+
+#8 [migrate build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+#8 DONE 18.5s
+
+#11 [migrate build 2/6] WORKDIR /src
+#11 DONE 1.7s
+
+#12 [migrate build 3/6] COPY Directory.Build.props Shipping.slnx dotnet-tools.json ./
+#12 DONE 0.2s
+
+#13 [migrate build 4/6] COPY src/ src/
+#13 DONE 0.1s
+
+#14 [migrate build 5/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet restore src/Shipping.Platform.Api/Shipping.Platform.Api.csproj
+#14 1.326   Determining projects to restore...
+#14 6.312   Restored /src/src/Modules/Sample/Shipping.Modules.Sample.Domain/Shipping.Modules.Sample.Domain.csproj (in 3.37 sec).
+#14 6.313   Restored /src/src/Modules/Sample/Shipping.Modules.Sample.Application/Shipping.Modules.Sample.Application.csproj (in 3.37 sec).
+#14 6.814   Restored /src/src/Modules/Sample/Shipping.Modules.Sample.Api/Shipping.Modules.Sample.Api.csproj (in 3.89 sec).
+#14 7.344   Restored /src/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Shipping.Modules.Sample.Infrastructure.csproj (in 4.43 sec).
+#14 9.538   Restored /src/src/Shipping.Platform.Api/Shipping.Platform.Api.csproj (in 6.62 sec).
+#14 DONE 10.0s
+
+#15 [migrate build 6/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet publish src/Shipping.Platform.Api/Shipping.Platform.Api.csproj         -c Release --no-restore -o /app/publish /p:UseAppHost=false
+#15 4.640   Shipping.Modules.Sample.Domain -> /src/src/Modules/Sample/Shipping.Modules.Sample.Domain/bin/Release/net10.0/Shipping.Modules.Sample.Domain.dll
+#15 5.016   Shipping.Modules.Sample.Application -> /src/src/Modules/Sample/Shipping.Modules.Sample.Application/bin/Release/net10.0/Shipping.Modules.Sample.Application.dll
+#15 5.805   Shipping.Modules.Sample.Infrastructure -> /src/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/bin/Release/net10.0/Shipping.Modules.Sample.Infrastructure.dll
+#15 6.507   Shipping.Modules.Sample.Api -> /src/src/Modules/Sample/Shipping.Modules.Sample.Api/bin/Release/net10.0/Shipping.Modules.Sample.Api.dll
+#15 7.655   Shipping.Platform.Api -> /src/src/Shipping.Platform.Api/bin/Release/net10.0/Shipping.Platform.Api.dll
+#15 7.785   Shipping.Platform.Api -> /app/publish/
+#15 DONE 7.9s
+
+#16 [migrate bundles 1/1] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet tool restore  && mkdir /bundles  && for project in src/Modules/*/Shipping.Modules.*.Infrastructure/Shipping.Modules.*.Infrastructure.csproj; do         module="$(basename "$project" .csproj | sed -E 's/^Shipping\.Modules\.(.+)\.Infrastructure$/\1/')";         echo "Bundling ${module}DbContext";         ConnectionStrings__PostgreSql="Host=build.invalid" dotnet ef migrations bundle             --project "$project" --startup-project src/Shipping.Platform.Api/Shipping.Platform.Api.csproj             --context "${module}DbContext" --configuration Release             --output "/bundles/$(echo "$module" | tr '[:upper:]' '[:lower:]')-efbundle" || exit 1;     done
+#16 5.503 Tool 'dotnet-ef' (version '10.0.11') was restored. Available commands: dotnet-ef
+#16 5.504
+#16 5.504 A newer version of tool 'dotnet-ef' is available (version '10.0.13'). Consider updating your manifest file.
+#16 5.504
+#16 5.504 Restore was successful.
+#16 5.522 Bundling SampleDbContext
+#16 7.349 Build started...
+#16 11.81 Build succeeded.
+#16 12.45 Building bundle...
+#16 30.23 Done. Migrations Bundle: /bundles/sample-efbundle
+#16 30.23 Don't forget to copy appsettings.json alongside your bundle if you need it to apply migrations.
+#16 DONE 30.7s
+
+#17 [migrate migrator 3/3] COPY --from=bundles /bundles/ ./
+#17 DONE 0.2s
+
+#18 [migrate] exporting to image
+#18 exporting layers
+#18 exporting layers 0.4s done
+#18 writing image sha256:6db9621b7a79aa530b7bf489ce45aa660e06ae17b914c122bb72c4499cf90d81 done
+#18 naming to docker.io/library/shipping-migrate 0.0s done
+#18 DONE 0.4s
+
+#19 [migrate] resolving provenance for metadata file
+#19 DONE 0.1s
+
+#20 [api internal] load build definition from Dockerfile
+#20 transferring dockerfile: 3.02kB 0.1s done
+#20 DONE 0.2s
+
+#2 [api] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 2.9s
+
+#3 [api] docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 CACHED
+
+#5 [api internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0.402
+#5 DONE 1.5s
+
+#4 [api internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0.13
+#4 DONE 1.4s
+
+#21 [api internal] load .dockerignore
+#21 transferring context: 419B 0.1s done
+#21 DONE 0.1s
+
+#8 [api build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+#8 DONE 18.5s
+
+#9 [api api 1/3] FROM mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac
+#9 CACHED
+
+#22 [api api 2/3] WORKDIR /app
+#22 DONE 0.1s
+
+#23 [api internal] load build context
+#23 transferring context: 2.89kB 0.1s done
+#23 DONE 0.1s
+
+#24 [api build 4/6] COPY src/ src/
+#24 CACHED
+
+#25 [api build 5/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet restore src/Shipping.Platform.Api/Shipping.Platform.Api.csproj
+#25 CACHED
+
+#11 [api build 2/6] WORKDIR /src
+#11 CACHED
+
+#26 [api build 3/6] COPY Directory.Build.props Shipping.slnx dotnet-tools.json ./
+#26 CACHED
+
+#27 [api build 6/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet publish src/Shipping.Platform.Api/Shipping.Platform.Api.csproj         -c Release --no-restore -o /app/publish /p:UseAppHost=false
+#27 CACHED
+
+#28 [api api 3/3] COPY --from=build /app/publish ./
+#28 DONE 0.1s
+
+#29 [api] exporting to image
+#29 exporting layers 0.1s done
+#29 writing image sha256:6c739b94dc17584403d2446302996fd7b13357638508bfa125c16d44772ae2d9 done
+#29 naming to docker.io/library/shipping-api 0.0s done
+#29 DONE 0.1s
+
+#30 [api] resolving provenance for metadata file
+#30 DONE 0.0s
+ api  Built
+ migrate  Built
+ Network shipping_backend  Creating
+ Network shipping_backend  Created
+ Network shipping_edge  Creating
+ Network shipping_edge  Created
+ Volume "shipping_postgres-data"  Creating
+ Volume "shipping_postgres-data"  Created
+ Container shipping-postgres-1  Creating
+ Container shipping-traefik-1  Creating
+ Container shipping-traefik-1  Created
+ Container shipping-postgres-1  Created
+ Container shipping-migrate-1  Creating
+ Container shipping-migrate-1  Created
+ Container shipping-api-1  Creating
+ Container shipping-api-1  Created
+ Container shipping-traefik-1  Starting
+ Container shipping-postgres-1  Starting
+ Container shipping-postgres-1  Started
+ Container shipping-postgres-1  Waiting
+ Container shipping-traefik-1  Started
+ Container shipping-postgres-1  Healthy
+ Container shipping-migrate-1  Starting
+ Container shipping-migrate-1  Started
+ Container shipping-migrate-1  Waiting
+ Container shipping-postgres-1  Waiting
+ Container shipping-postgres-1  Healthy
+ Container shipping-migrate-1  Exited
+ Container shipping-api-1  Starting
+ Container shipping-api-1  Started
+ Container shipping-migrate-1  Waiting
+ Container shipping-api-1  Waiting
+ Container shipping-traefik-1  Waiting
+ Container shipping-postgres-1  Waiting
+ Container shipping-traefik-1  Healthy
+ Container shipping-migrate-1  Exited
+ Container shipping-postgres-1  Healthy
+ Container shipping-api-1  Healthy
+[exit 0, 103 s, elapsed 108 s]
+
+$ docker compose ps
+NAME                  IMAGE                  COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+shipping-api-1        shipping-api           "dotnet Shipping.Pla…"   api        16 seconds ago   Up 7 seconds (healthy)    8080/tcp
+shipping-postgres-1   postgres:17.6-alpine   "docker-entrypoint.s…"   postgres   16 seconds ago   Up 15 seconds (healthy)
+shipping-traefik-1    traefik:v3.7.15        "/entrypoint.sh --en…"   traefik    16 seconds ago   Up 15 seconds             127.0.0.1:8000->80/tcp
+[exit 0, 0 s, elapsed 109 s]
+
+first request right after --wait:
+200 server=Kestrel
+
+$ curl -i --fail --retry 30 --retry-delay 2 --retry-all-errors -H Host: localhost http://localhost:8000/health
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                              0100      7   0      7   0      0     19      0                              0100      7   0      7   0      0     19      0                              0100      7   0      7   0      0     19      0                              0
+HTTP/1.1 200 OK
+Cache-Control: no-store, no-cache
+Content-Type: text/plain
+Date: Mon, 19 Oct 2026 05:01:35 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Pragma: no-cache
+Server: Kestrel
+Transfer-Encoding: chunked
+
+Healthy[exit 0, 0 s, elapsed 111 s]
+
+end: 2026-10-19T05:01:36Z
+TOTAL quickstart (clone -> healthy 200): 111 s
+
+### Run 2: warm cache
+== run 2: warm Docker cache (images and BuildKit/NuGet cache from run 1), fresh clone, new volume
+start: 2026-10-19T05:03:10Z
+os: MINGW64_NT-10.0-26100 GIT-AE-SRV-RDT1 3.6.9-b4195d69.x86_64 2026-06-06 17:49 UTC x86_64 Msys
+docker client 27.5.1, server 27.5.1 (linux/amd64)
+Docker Compose version v2.32.4
+
+$ git clone https://github.com/parazit-IR/shipping.git
+Cloning into 'shipping'...
+[exit 0, 2 s, elapsed 3 s]
+commit: a75aab5
+
+$ cp .env.example .env
+[exit 0, 1 s, elapsed 4 s]
+
+$ sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env
+[exit 0, 0 s]
+password lines set: 1
+
+$ docker compose config --quiet
+[exit 0, 0 s, elapsed 5 s]
+
+$ docker compose up --build -d --wait --wait-timeout 300
+#0 building with "default" instance using docker driver
+
+#1 [migrate internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.02kB 0.1s done
+#1 DONE 0.1s
+
+#2 [migrate] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.3s
+
+#3 [migrate] docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 CACHED
+
+#4 [migrate internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0.13
+#4 DONE 0.2s
+
+#5 [migrate internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0.402
+#5 DONE 0.2s
+
+#6 [migrate internal] load .dockerignore
+#6 transferring context: 419B 0.1s done
+#6 DONE 0.1s
+
+#7 [migrate build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+#7 DONE 0.0s
+
+#8 [migrate migrator 1/3] FROM mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac
+#8 DONE 0.0s
+
+#9 [migrate internal] load build context
+#9 transferring context: 44.70kB 0.1s done
+#9 DONE 0.1s
+
+#10 [migrate build 3/6] COPY Directory.Build.props Shipping.slnx dotnet-tools.json ./
+#10 CACHED
+
+#11 [migrate build 6/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet publish src/Shipping.Platform.Api/Shipping.Platform.Api.csproj         -c Release --no-restore -o /app/publish /p:UseAppHost=false
+#11 CACHED
+
+#12 [migrate bundles 1/1] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet tool restore  && mkdir /bundles  && for project in src/Modules/*/Shipping.Modules.*.Infrastructure/Shipping.Modules.*.Infrastructure.csproj; do         module="$(basename "$project" .csproj | sed -E 's/^Shipping\.Modules\.(.+)\.Infrastructure$/\1/')";         echo "Bundling ${module}DbContext";         ConnectionStrings__PostgreSql="Host=build.invalid" dotnet ef migrations bundle             --project "$project" --startup-project src/Shipping.Platform.Api/Shipping.Platform.Api.csproj             --context "${module}DbContext" --configuration Release             --output "/bundles/$(echo "$module" | tr '[:upper:]' '[:lower:]')-efbundle" || exit 1;     done
+#12 CACHED
+
+#13 [migrate migrator 2/3] WORKDIR /migrations
+#13 CACHED
+
+#14 [migrate build 2/6] WORKDIR /src
+#14 CACHED
+
+#15 [migrate build 4/6] COPY src/ src/
+#15 CACHED
+
+#16 [migrate build 5/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet restore src/Shipping.Platform.Api/Shipping.Platform.Api.csproj
+#16 CACHED
+
+#17 [migrate migrator 3/3] COPY --from=bundles /bundles/ ./
+#17 CACHED
+
+#18 [migrate] exporting to image
+#18 exporting layers done
+#18 writing image sha256:6db9621b7a79aa530b7bf489ce45aa660e06ae17b914c122bb72c4499cf90d81 done
+#18 naming to docker.io/library/shipping-migrate done
+#18 DONE 0.0s
+
+#19 [migrate] resolving provenance for metadata file
+#19 DONE 0.1s
+
+#20 [api internal] load build definition from Dockerfile
+#20 transferring dockerfile: 3.02kB 0.1s done
+#20 DONE 0.1s
+
+#2 [api] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.7s
+
+#3 [api] docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 CACHED
+
+#4 [api internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0.13
+#4 ...
+
+#5 [api internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0.402
+#5 DONE 0.4s
+
+#4 [api internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0.13
+#4 DONE 0.4s
+
+#21 [api internal] load .dockerignore
+#21 transferring context: 419B 0.1s done
+#21 DONE 0.1s
+
+#7 [api build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+#7 DONE 0.0s
+
+#8 [api api 1/3] FROM mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac
+#8 DONE 0.0s
+
+#22 [api internal] load build context
+#22 transferring context: 2.89kB 0.1s done
+#22 DONE 0.1s
+
+#23 [api build 4/6] COPY src/ src/
+#23 CACHED
+
+#24 [api api 2/3] WORKDIR /app
+#24 CACHED
+
+#25 [api build 6/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet publish src/Shipping.Platform.Api/Shipping.Platform.Api.csproj         -c Release --no-restore -o /app/publish /p:UseAppHost=false
+#25 CACHED
+
+#14 [api build 2/6] WORKDIR /src
+#14 CACHED
+
+#26 [api build 3/6] COPY Directory.Build.props Shipping.slnx dotnet-tools.json ./
+#26 CACHED
+
+#27 [api build 5/6] RUN --mount=type=cache,id=shipping-nuget,target=/root/.nuget/packages     dotnet restore src/Shipping.Platform.Api/Shipping.Platform.Api.csproj
+#27 CACHED
+
+#28 [api api 3/3] COPY --from=build /app/publish ./
+#28 CACHED
+
+#29 [api] exporting to image
+#29 exporting layers done
+#29 writing image sha256:6c739b94dc17584403d2446302996fd7b13357638508bfa125c16d44772ae2d9 done
+#29 naming to docker.io/library/shipping-api done
+#29 DONE 0.0s
+
+#30 [api] resolving provenance for metadata file
+#30 DONE 0.0s
+ api  Built
+ migrate  Built
+ Network shipping_backend  Creating
+ Network shipping_backend  Created
+ Network shipping_edge  Creating
+ Network shipping_edge  Created
+ Volume "shipping_postgres-data"  Creating
+ Volume "shipping_postgres-data"  Created
+ Container shipping-postgres-1  Creating
+ Container shipping-traefik-1  Creating
+ Container shipping-postgres-1  Created
+ Container shipping-traefik-1  Created
+ Container shipping-migrate-1  Creating
+ Container shipping-migrate-1  Created
+ Container shipping-api-1  Creating
+ Container shipping-api-1  Created
+ Container shipping-traefik-1  Starting
+ Container shipping-postgres-1  Starting
+ Container shipping-postgres-1  Started
+ Container shipping-postgres-1  Waiting
+ Container shipping-traefik-1  Started
+ Container shipping-postgres-1  Healthy
+ Container shipping-migrate-1  Starting
+ Container shipping-migrate-1  Started
+ Container shipping-migrate-1  Waiting
+ Container shipping-postgres-1  Waiting
+ Container shipping-postgres-1  Healthy
+ Container shipping-migrate-1  Exited
+ Container shipping-api-1  Starting
+ Container shipping-api-1  Started
+ Container shipping-traefik-1  Waiting
+ Container shipping-postgres-1  Waiting
+ Container shipping-migrate-1  Waiting
+ Container shipping-api-1  Waiting
+ Container shipping-migrate-1  Exited
+ Container shipping-traefik-1  Healthy
+ Container shipping-postgres-1  Healthy
+ Container shipping-api-1  Healthy
+[exit 0, 19 s, elapsed 24 s]
+
+$ docker compose ps
+NAME                  IMAGE                  COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+shipping-api-1        shipping-api           "dotnet Shipping.Pla…"   api        15 seconds ago   Up 7 seconds (healthy)    8080/tcp
+shipping-postgres-1   postgres:17.6-alpine   "docker-entrypoint.s…"   postgres   15 seconds ago   Up 14 seconds (healthy)
+shipping-traefik-1    traefik:v3.7.15        "/entrypoint.sh --en…"   traefik    15 seconds ago   Up 14 seconds             127.0.0.1:8000->80/tcp
+[exit 0, 1 s, elapsed 25 s]
+
+first request right after --wait:
+200 server=Kestrel
+
+$ curl -i --fail --retry 30 --retry-delay 2 --retry-all-errors -H Host: localhost http://localhost:8000/health
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                              0100      7   0      7   0      0     22      0                              0100      7   0      7   0      0     22      0                              0100      7   0      7   0      0     22      0                              0
+HTTP/1.1 200 OK
+Cache-Control: no-store, no-cache
+Content-Type: text/plain
+Date: Mon, 19 Oct 2026 05:03:35 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Pragma: no-cache
+Server: Kestrel
+Transfer-Encoding: chunked
+
+Healthy[exit 0, 1 s, elapsed 26 s]
+
+end: 2026-10-19T05:03:36Z
+TOTAL quickstart (clone -> healthy 200): 26 s
+
+### PowerShell run: the README's PowerShell block, warm cache (Windows PowerShell 5.1)
+# Script: fresh clone into a new temporary directory, then the README block line by line; `up` output discarded,
+# the generated password never printed; curl's progress-meter lines omitted; afterwards `docker compose down -v` removed this run's own volume.
+PS 5.1.26100.33648
+clone exit 0
+password lines: 1
+config exit 0
+up exit 0
+api Up 7 seconds (healthy)
+postgres Up 15 seconds (healthy)
+traefik Up 14 seconds
+HTTP/1.1 200 OK
+Cache-Control: no-store, no-cache
+Content-Type: text/plain
+Date: Mon, 19 Oct 2026 05:10:41 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Pragma: no-cache
+Server: Kestrel
+Transfer-Encoding: chunked
+
+Healthy
+curl exit 0
+elapsed s: 25
+cleanup exit 0

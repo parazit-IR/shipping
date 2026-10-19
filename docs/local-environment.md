@@ -119,13 +119,15 @@ published. To publish it, add it in a git-ignored `compose.override.yml`.
 `shipping-smoke`, on port 18000 with a generated password. It checks services, networks, published ports,
 routing, readiness order, `GET /health` (including a PostgreSQL stop and restart), migrations and data persistence, then removes only that project's containers,
 network, volume and images. It ignores your `.env`. The project name must start with `shipping-smoke`. It has
-been run on Linux. It is written for Git Bash and macOS too, but neither has been run end to end yet. CI runs
+been run on Linux. It is written for Git Bash and macOS too, but neither has passed end to end yet: in Git Bash on
+one Windows machine the Docker CLI received no output from containers, so 7 checks failed
+([US-EN-1 T5](testing/US-EN-1-T5-red-green.md#green-and-regression)). CI runs
 it in the `compose-smoke` job. Evidence:
 [US-EN-1 T3](testing/US-EN-1-T3-red-green.md), [US-EN-1 T4](testing/US-EN-1-T4-red-green.md).
 
 ## Known limitations and pending SLS-15 work
 
-- **Full new-developer README:** SLS-15 T5. **Team walkthrough:** SLS-15 T6.
+- **New-developer quickstart:** the [README](../README.md#quickstart) (US-EN-1 T5). **Team walkthrough:** SLS-15 T6.
 - **Docker socket:** the read-only bind keeps Traefik from changing the socket file, but it does not restrict
   the Docker API calls Traefik makes. Traefik's Docker provider only reads. If that is not acceptable, a
   socket proxy that allows only read calls is the next step. That decision is not made here.
