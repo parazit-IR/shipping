@@ -102,7 +102,9 @@ application role with DML grants per schema. Review the `--idempotent` script be
 `booking`), its factory, its registration, and `AddBookingModule(connectionString)`. Then:
 
 1. In `Program.cs`, call `builder.Services.AddBookingModule(databaseConnection);`.
-2. Add the baseline migration with
+2. Run `dotnet build Shipping.slnx` first (`dotnet ef` fails with `NETSDK1004` on projects that were never
+   restored), set `ConnectionStrings__PostgreSql` (above; adding a migration does not connect), then add the
+   baseline migration with
    `dotnet ef migrations add Baseline --project src/Modules/Booking/Shipping.Modules.Booking.Infrastructure --startup-project src/Shipping.Platform.Api --context BookingDbContext --output-dir Persistence/Migrations`.
 3. Run `dotnet test`. The persistence rules find the module by convention.
 

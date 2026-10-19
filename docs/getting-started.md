@@ -1,8 +1,10 @@
 # Getting started
 
-This repository is the US-EN-1 T1 .NET 10 modular monolith foundation generated from MP Core
+This repository is the US-EN-1 .NET 10 modular monolith foundation generated from MP Core
 `0.10.1`. It has a REST host and a four-project Sample module, with no business behavior yet.
 Read `.mpcore/template-manifest.json` for the recorded shape, transport, messaging, and MP Core version.
+New to the repository? Start with the [README quickstart](../README.md#quickstart); this page adds detail on
+the solution and on running the host without Docker Compose.
 
 ## T1 prerequisites and commands
 
@@ -43,25 +45,16 @@ treat this scaffold as a deployed API.
 
 ## Create another technical module
 
-```bash
-dotnet new install ./templates/Module
-dotnet new shipping-module --name Probe --output src/Modules/Probe
-dotnet sln Shipping.slnx add src/Modules/Probe/Shipping.Modules.Probe.*/*.csproj
-```
-
-Add a host `ProjectReference` to `Shipping.Modules.Probe.Api`, then call `AddProbeModule(databaseConnection)` before
-`builder.Build()` and `MapProbeModule()` after it in `src/Shipping.Platform.Api/Program.cs`. The template
-creates Domain, Application, Infrastructure, and Api projects. See
-[ADR-001](architecture/ADR-001-four-project-modules.md) for their dependency rules. Persistence is
-already generated: the module has its own DbContext and schema; add a baseline migration
-([persistence](persistence.md#adding-persistence-to-a-new-module)). Registering handlers or resources
-becomes relevant when those capabilities exist.
+Follow [Create a module](../README.md#create-a-module) in the README: it generates the Domain, Application,
+Infrastructure, and Api projects from `templates/Module`, registers them in the solution and the host, and adds
+the module's baseline migration. See [ADR-001](architecture/ADR-001-four-project-modules.md) for their
+dependency rules. Registering handlers or resources becomes relevant when those capabilities exist.
 
 ## Later work
 
-T2 added persistence and migrations ([persistence](persistence.md)). T3–T6 may add security, health
-probes, deployment infrastructure, and
-business capabilities according to their own accepted requirements. The retained MP Core guides under
+T2 added persistence and migrations ([persistence](persistence.md)), T3 the Docker Compose environment and
+T4 `GET /health` ([local environment](local-environment.md)), T5 the README quickstart. Security and
+business capabilities come with their own accepted requirements. The retained MP Core guides under
 `docs/` and `.mpcore/skills/` describe patterns for such work; they do not mean those features are
 implemented in T1. Do not add another transport or message broker without an approved scope change.
 
