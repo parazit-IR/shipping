@@ -1,0 +1,102 @@
+# runner: slos127-runner-0e9d25af image=mcr.microsoft.com/dotnet/sdk:10.0.402 started 2026-10-18T12:06:54Z
+# branch: feat/SLOS-127-health-endpoint at 37a0f54 + working tree (tests only; header filled in afterwards: the runner left it empty)
+# command: dotnet restore Shipping.slnx && dotnet build Shipping.slnx -c Release --no-restore && dotnet test Shipping.slnx -c Release --no-build
+  Determining projects to restore...
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Domain/Shipping.Modules.Sample.Domain.csproj (in 6.32 sec).
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Shipping.Modules.Sample.Infrastructure.csproj (in 6.34 sec).
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Application/Shipping.Modules.Sample.Application.csproj (in 6.33 sec).
+  Restored /work/src/Modules/Sample/Shipping.Modules.Sample.Api/Shipping.Modules.Sample.Api.csproj (in 6.33 sec).
+  Restored /work/tests/Shipping.ArchitectureTests/Shipping.ArchitectureTests.csproj (in 8.21 sec).
+  Restored /work/tests/Shipping.UnitTests/Shipping.UnitTests.csproj (in 8.21 sec).
+  Restored /work/tests/Shipping.IntegrationTests/Shipping.IntegrationTests.csproj (in 8.28 sec).
+  Restored /work/src/Shipping.Platform.Api/Shipping.Platform.Api.csproj (in 8.37 sec).
+  Shipping.Modules.Sample.Domain -> /work/src/Modules/Sample/Shipping.Modules.Sample.Domain/bin/Release/net10.0/Shipping.Modules.Sample.Domain.dll
+  Shipping.Modules.Sample.Application -> /work/src/Modules/Sample/Shipping.Modules.Sample.Application/bin/Release/net10.0/Shipping.Modules.Sample.Application.dll
+  Shipping.Modules.Sample.Infrastructure -> /work/src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/bin/Release/net10.0/Shipping.Modules.Sample.Infrastructure.dll
+  Shipping.Modules.Sample.Api -> /work/src/Modules/Sample/Shipping.Modules.Sample.Api/bin/Release/net10.0/Shipping.Modules.Sample.Api.dll
+  Shipping.Platform.Api -> /work/src/Shipping.Platform.Api/bin/Release/net10.0/Shipping.Platform.Api.dll
+  Shipping.UnitTests -> /work/tests/Shipping.UnitTests/bin/Release/net10.0/Shipping.UnitTests.dll
+  Shipping.IntegrationTests -> /work/tests/Shipping.IntegrationTests/bin/Release/net10.0/Shipping.IntegrationTests.dll
+  Shipping.ArchitectureTests -> /work/tests/Shipping.ArchitectureTests/bin/Release/net10.0/Shipping.ArchitectureTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:25.91
+Test run for /work/tests/Shipping.ArchitectureTests/bin/Release/net10.0/Shipping.ArchitectureTests.dll (.NETCoreApp,Version=v10.0)
+Test run for /work/tests/Shipping.IntegrationTests/bin/Release/net10.0/Shipping.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+Test run for /work/tests/Shipping.UnitTests/bin/Release/net10.0/Shipping.UnitTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.85]     Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token [FAIL]
+[xUnit.net 00:00:02.17]     Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists [FAIL]
+[xUnit.net 00:00:02.29]     Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none [FAIL]
+  Failed Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token [1 s]
+  Error Message:
+   Assert.Single() Failure: The collection did not contain any matching items
+Expected:   (predicate expression)
+Collection: []
+  Stack Trace:
+     at Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token() in /work/tests/Shipping.UnitTests/HealthEndpointCompositionTests.cs:line 26
+   at Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token() in /work/tests/Shipping.UnitTests/HealthEndpointCompositionTests.cs:line 30
+--- End of stack trace from previous location ---
+  Failed Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists [340 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: MethodNotAllowed
+Actual:   NotFound
+  Stack Trace:
+     at Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists() in /work/tests/Shipping.UnitTests/HealthEndpointCompositionTests.cs:line 58
+   at Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused_and_no_other_health_path_exists() in /work/tests/Shipping.UnitTests/HealthEndpointCompositionTests.cs:line 60
+--- End of stack trace from previous location ---
+  Failed Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none [121 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: ["sample-database"]
+Actual:   []
+  Stack Trace:
+     at Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none() in /work/tests/Shipping.UnitTests/HealthEndpointCompositionTests.cs:line 41
+   at Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none() in /work/tests/Shipping.UnitTests/HealthEndpointCompositionTests.cs:line 44
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     3, Passed:     9, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+[xUnit.net 00:00:29.65]     Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_with_no_detail_while_the_database_refuses_connections_and_200_once_it_accepts_them [FAIL]
+[xUnit.net 00:00:30.09]     Shipping.IntegrationTests.HealthEndpointTests.Health_neither_migrates_nor_creates_anything_in_the_database [FAIL]
+[xUnit.net 00:00:30.43]     Shipping.IntegrationTests.HealthEndpointTests.Health_returns_200_Healthy_without_a_token_when_every_module_reaches_the_database [FAIL]
+  Failed Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_with_no_detail_while_the_database_refuses_connections_and_200_once_it_accepts_them [570 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ServiceUnavailable
+Actual:   NotFound
+  Stack Trace:
+     at Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_with_no_detail_while_the_database_refuses_connections_and_200_once_it_accepts_them() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 64
+   at Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_with_no_detail_while_the_database_refuses_connections_and_200_once_it_accepts_them() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 70
+   at Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_with_no_detail_while_the_database_refuses_connections_and_200_once_it_accepts_them() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 75
+--- End of stack trace from previous location ---
+  Failed Shipping.IntegrationTests.HealthEndpointTests.Health_neither_migrates_nor_creates_anything_in_the_database [443 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: OK
+Actual:   NotFound
+  Stack Trace:
+     at Shipping.IntegrationTests.HealthEndpointTests.Health_neither_migrates_nor_creates_anything_in_the_database() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 43
+   at Shipping.IntegrationTests.HealthEndpointTests.Health_neither_migrates_nor_creates_anything_in_the_database() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 45
+--- End of stack trace from previous location ---
+  Failed Shipping.IntegrationTests.HealthEndpointTests.Health_returns_200_Healthy_without_a_token_when_every_module_reaches_the_database [340 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: OK
+Actual:   NotFound
+  Stack Trace:
+     at Shipping.IntegrationTests.HealthEndpointTests.Health_returns_200_Healthy_without_a_token_when_every_module_reaches_the_database() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 27
+   at Shipping.IntegrationTests.HealthEndpointTests.Health_returns_200_Healthy_without_a_token_when_every_module_reaches_the_database() in /work/tests/Shipping.IntegrationTests/HealthEndpointTests.cs:line 30
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     3, Passed:     9, Skipped:     0, Total:    12, Duration: 16 s - Shipping.IntegrationTests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 41 s - Shipping.ArchitectureTests.dll (net10.0)
+EXIT=1
+# finished 2026-10-18T12:08:27Z

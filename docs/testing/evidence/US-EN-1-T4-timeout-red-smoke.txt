@@ -1,0 +1,99 @@
+# runner: slos127-runner-88abdeca image=mcr.microsoft.com/dotnet/sdk:10.0.402 started 2026-10-18T12:35:06Z
+# branch: feat/SLOS-127-health-endpoint at 37a0f54 + working tree
+# command: install -m755 /tools/docker /usr/local/bin/docker && mkdir -p /usr/local/libexec/docker/cli-plugins && install -m755 /tools/cli-plugins/docker-compose /tools/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/ && bash tests/compose/compose-smoke.sh
+Compose project: shipping-smoke, entry point: http://127.0.0.1:18000
+PASS  test_compose_configuration_is_valid
+PASS  test_compose_refuses_to_start_without_a_database_password
+PASS  test_compose_defines_exactly_the_api_database_proxy_and_migration_services
+PASS  test_compose_images_build
+PASS  test_api_image_runs_the_shipping_host_and_refuses_to_start_without_a_connection_string
+PASS  test_api_image_is_a_runtime_image_running_as_non_root_without_sdk_or_migration_tooling
+PASS  test_compose_up_starts_and_waits_for_every_service
+PASS  test_postgres_is_healthy_by_pg_isready
+PASS  test_migrations_finish_successfully_before_the_api_starts
+PASS  test_api_is_ready_and_running
+PASS  test_api_readiness_is_its_health_endpoint
+PASS  test_api_reaches_postgres_by_its_service_name
+PASS  test_networks_separate_the_proxy_from_the_database
+PASS  test_only_the_proxy_entry_point_is_published_on_the_host
+PASS  test_traefik_routes_requests_for_the_api_host_to_the_api
+PASS  test_traefik_does_not_route_other_hosts
+PASS  test_traefik_has_no_dashboard_or_api_and_a_read_only_docker_socket
+PASS  test_health_returns_200_healthy_from_the_api_through_traefik
+FAIL  test_health_returns_503_while_postgres_is_stopped_and_200_once_it_is_back: a later request while postgres was stopped was answered ' ' (status code, server, body)
+PASS  test_each_module_is_migrated_through_its_own_schema_and_history
+PASS  test_migrations_run_again_change_nothing
+PASS  test_api_stays_running_after_the_checks
+PASS  test_database_data_survives_container_recreation_and_compose_down
+PASS  test_a_failed_migration_prevents_the_api_from_starting
+
+Passed: 23, Failed: 1, Total: 24
+  failed: test_health_returns_503_while_postgres_is_stopped_and_200_once_it_is_back
+Logs of the last state:
+NAME                        IMAGE                    COMMAND                  SERVICE    CREATED          STATUS                     PORTS
+shipping-smoke-api-1        shipping-smoke-api       "dotnet Shipping.Pla…"   api        12 seconds ago   Created
+shipping-smoke-migrate-1    shipping-smoke-migrate   "/bin/sh -ec 'for bu…"   migrate    12 seconds ago   Exited (1) 2 seconds ago
+shipping-smoke-postgres-1   postgres:17.6-alpine     "docker-entrypoint.s…"   postgres   13 seconds ago   Up 11 seconds (healthy)    5432/tcp
+shipping-smoke-traefik-1    traefik:v3.7.15          "/entrypoint.sh --en…"   traefik    13 seconds ago   Up 11 seconds              127.0.0.1:18000->80/tcp
+postgres-1  |
+postgres-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+postgres-1  |
+postgres-1  | 2026-10-18 12:37:45.280 UTC [1] LOG:  starting PostgreSQL 17.6 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+postgres-1  | 2026-10-18 12:37:45.280 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1  | 2026-10-18 12:37:45.280 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2026-10-18 12:37:45.348 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-10-18 12:37:45.415 UTC [29] LOG:  database system was shut down at 2026-10-18 12:37:38 UTC
+postgres-1  | 2026-10-18 12:37:45.440 UTC [1] LOG:  database system is ready to accept connections
+postgres-1  | 2026-10-18 12:37:53.250 UTC [40] FATAL:  password authentication failed for user "shipping"
+postgres-1  | 2026-10-18 12:37:53.250 UTC [40] DETAIL:  Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+postgres-1  | 2026-10-18 12:37:53.269 UTC [41] FATAL:  password authentication failed for user "shipping"
+postgres-1  | 2026-10-18 12:37:53.269 UTC [41] DETAIL:  Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+migrate-1   |    at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+migrate-1   |    at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|209_0(NpgsqlConnector conn, String username, SslMode sslMode, GssEncryptionMode gssEncMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|209_0(NpgsqlConnector conn, String username, SslMode sslMode, GssEncryptionMode gssEncMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+migrate-1   |    at Npgsql.NpgsqlConnection.Open()
+migrate-1   |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenDbConnection(Boolean errorsExpected)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Migrations.HistoryRepository.GetAppliedMigrations()
+migrate-1   |    at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlHistoryRepository.GetAppliedMigrations()
+migrate-1   |    at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.Migrate(String targetMigration)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Migrations.Design.MigrationsBundle.ExecuteInternal(String[] args)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Migrations.Design.MigrationsBundle.<>c__DisplayClass6_0.<Configure>b__0(String[] args)
+migrate-1   |    at Microsoft.DotNet.Cli.CommandLine.CommandLineApplication.Execute(String[] args)
+migrate-1   |    at Microsoft.EntityFrameworkCore.Migrations.Design.MigrationsBundle.Execute(String context, Assembly assembly, Assembly startupAssembly, String[] args)
+migrate-1   |   Exception data:
+migrate-1   |     Severity: FATAL
+migrate-1   |     SqlState: 28P01
+migrate-1   |     MessageText: password authentication failed for user "shipping"
+migrate-1   |     File: auth.c
+migrate-1   |     Line: 329
+migrate-1   |     Routine: auth_failed
+migrate-1   | 28P01: password authentication failed for user "shipping"
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [33mWRN[0m [1mTraefik can reject some encoded characters in the request path. When your backend is not fully compliant with [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986), it is recommended to set these options to `false` to avoid split-view situation. Refer to the documentation for more details: https://doc.traefik.io/traefik/v3.6/migrate/v3/#encoded-characters-configuration-default-values[0m
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [32mINF[0m [1mTraefik version 3.7.15 built on 2026-10-15T14:33:48Z[0m [36mversion=[0m3.7.15
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [32mINF[0m [1m
+traefik-1   | Version check is disabled.
+traefik-1   | You will not be notified if a new version is available.
+traefik-1   | More details: https://doc.traefik.io/traefik/contributing/data-collection/
+traefik-1   | [0m
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [32mINF[0m [1m
+traefik-1   | Stats collection is disabled.
+traefik-1   | Help us improve Traefik by turning this feature on :)
+traefik-1   | More details on: https://doc.traefik.io/traefik/contributing/data-collection/
+traefik-1   | [0m
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [33mWRN[0m [1maliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends.[0m [36mentryPointName=[0mweb
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [32mINF[0m [1mStarting provider aggregator *aggregator.ProviderAggregator[0m
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [32mINF[0m [1mStarting provider *traefik.Provider[0m
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [32mINF[0m [1mStarting provider *acme.ChallengeTLSALPN[0m
+traefik-1   | [90m2026-10-18T12:37:45Z[0m [32mINF[0m [1mStarting provider *docker.Provider[0m
+EXIT=1
+# finished 2026-10-18T12:38:00Z

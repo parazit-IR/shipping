@@ -1,0 +1,50 @@
+# Failure-scenario verification on the final tree (one-off script, not committed; isolated project shipping-smoke-t4verify on port 18001, removed at the end).
+# Note: 'body=0' on the 'direct to Kestrel' lines is a script artifact (last line of a chunked response is the terminating chunk), not the API's body.
+# runner: slos127-runner-7d485c83 image=mcr.microsoft.com/dotnet/sdk:10.0.402 started 2026-10-18T12:55:18Z
+# branch: feat/SLOS-127-health-endpoint at 37a0f54 + working tree
+# command: install -m755 /tools/docker /usr/local/bin/docker && mkdir -p /usr/local/libexec/docker/cli-plugins && install -m755 /tools/cli-plugins/docker-compose /tools/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/ && bash /verify.sh
+== up
+compose up exit 0
+api running healthy 0
+migrate exited  0
+postgres running healthy 0
+traefik running  0
+== 1. healthy stack
+12:55:50 GET /health status=404 server= body=404 page not found
+12:55:52 GET /health status=200 server=Kestrel body=Healthy
+12:55:52 POST /health status=405 server=Kestrel body=
+12:55:52 GET /sls127-unmapped status=404 server=Kestrel body=
+direct to Kestrel: HTTP/1.1 200 OK | Server: Kestrel | body=0 | 17 ms
+== 2. postgres stopped (short outage)
+12:55:53 through Traefik: 503 in 0.041240s
+12:55:53 through Traefik: 503 in 2.046384s
+12:55:55 through Traefik: 503 in 2.009296s
+12:55:57 through Traefik: 503 in 2.015543s
+12:56:00 through Traefik: 503 in 2.047132s
+12:56:04 GET /health status=503 server=Kestrel body=Unhealthy
+direct to Kestrel: HTTP/1.1 503 Service Unavailable | Server: Kestrel | body=0 | 2027 ms
+api container: running healthy
+== 3. postgres stopped long enough for Docker to mark the api unhealthy (20 failed probes)
+12:58:15 api container: running unhealthy
+12:58:19 GET /health status=404 server= body=404 page not found
+direct to Kestrel: HTTP/1.1 503 Service Unavailable | Server: Kestrel | body=0 | 2037 ms
+== 4. postgres started again
+12:58:25 api container: running healthy
+12:58:28 GET /health status=200 server=Kestrel body=Healthy
+direct to Kestrel: HTTP/1.1 200 OK | Server: Kestrel | body=0 | 12 ms
+== 5. api process stopped
+12:58:32 GET /health status=404 server= body=404 page not found
+== 6. api started again
+12:58:45 api container: running healthy
+12:58:45 GET /health status=200 server=Kestrel body=Healthy
+== api logs: any 500, exception page or 'Can't close'?
+0
+== api logs: health check outcomes (last 6)
+api-1  | 2026-10-18T12:57:50.913Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2003.4109ms
+api-1  | 2026-10-18T12:57:58.111Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2006.0213ms
+api-1  | 2026-10-18T12:58:05.271Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 1999.441ms
+api-1  | 2026-10-18T12:58:12.384Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2000.8622ms
+api-1  | 2026-10-18T12:58:19.597Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2014.0085ms
+api-1  | 2026-10-18T12:58:21.607Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2005.2119ms
+EXIT=0
+# finished 2026-10-18T12:58:49Z

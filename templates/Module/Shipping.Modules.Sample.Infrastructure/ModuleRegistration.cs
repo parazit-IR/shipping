@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using MPCore.Persistence.EntityFrameworkCore.PostgreSql;
 using Shipping.Modules.Sample.Application.Ports;
 using Shipping.Modules.Sample.Infrastructure.Persistence;
@@ -19,6 +20,14 @@ public static class ModuleRegistration
         ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
         services.AddDbContext<SampleDbContext>(options => PostgreSqlDbContextOptions.Apply(options, connectionString));
         services.AddScoped<ISampleUnitOfWork>(static provider => provider.GetRequiredService<SampleDbContext>());
+        // The host's GET /health asks this module whether its context reaches the database (SLOS-127). Only the
+        // check is added: the host registers the health check service once, as it does the time provider. The
+        // timeout keeps a database that does not answer below the container probe's 3 s.
+        services.AddSingleton<SampleDatabaseHealthCheck.Attempt>();
+        services.Configure<HealthCheckServiceOptions>(static options => options.Registrations.Add(new HealthCheckRegistration(
+            $"{SamplePersistence.Schema}-database",
+            static provider => ActivatorUtilities.CreateInstance<SampleDatabaseHealthCheck>(provider),
+            HealthStatus.Unhealthy, tags: [], timeout: TimeSpan.FromSeconds(2))));
         return services;
     }
 }

@@ -1,0 +1,27 @@
+# REFACTOR run: 2026-10-18T10:25:44Z, branch feat/SLS-126-docker-compose at 0c2828b + working tree
+# command: bash tests/compose/compose-smoke.sh (in a docker:27.5.1-cli runner on the engine host)
+Compose project: shipping-smoke, entry point: http://127.0.0.1:18000
+PASS  test_compose_configuration_is_valid
+PASS  test_compose_refuses_to_start_without_a_database_password
+PASS  test_compose_defines_exactly_the_api_database_proxy_and_migration_services
+PASS  test_compose_images_build
+PASS  test_api_image_runs_the_shipping_host_and_refuses_to_start_without_a_connection_string
+PASS  test_api_image_is_a_runtime_image_running_as_non_root_without_sdk_or_migration_tooling
+PASS  test_compose_up_starts_and_waits_for_every_service
+PASS  test_postgres_is_healthy_by_pg_isready
+PASS  test_migrations_finish_successfully_before_the_api_starts
+PASS  test_api_is_ready_and_running
+PASS  test_api_reaches_postgres_by_its_service_name
+PASS  test_networks_separate_the_proxy_from_the_database
+PASS  test_only_the_proxy_entry_point_is_published_on_the_host
+PASS  test_traefik_routes_requests_for_the_api_host_to_the_api
+PASS  test_traefik_does_not_route_other_hosts
+PASS  test_traefik_has_no_dashboard_or_api_and_a_read_only_docker_socket
+PASS  test_each_module_is_migrated_through_its_own_schema_and_history
+PASS  test_migrations_run_again_change_nothing
+PASS  test_api_stays_running_after_the_checks
+PASS  test_database_data_survives_container_recreation_and_compose_down
+PASS  test_a_failed_migration_prevents_the_api_from_starting
+
+Passed: 21, Failed: 0, Total: 21
+EXIT=0

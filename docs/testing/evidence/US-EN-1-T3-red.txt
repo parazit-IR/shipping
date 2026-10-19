@@ -1,0 +1,91 @@
+# RED run: 2026-10-18T09:36:47Z, commit 0c2828b + tests/compose/compose-smoke.sh only
+# tree: compose.yaml=absent Dockerfile=absent
+# command: bash tests/compose/compose-smoke.sh (in a docker:27.5.1-cli runner on the engine host)
+Unable to find image 'docker:27.5.1-cli' locally
+27.5.1-cli: Pulling from library/docker
+8e8cf49b6d3c: Pulling fs layer
+f18232174bc9: Pulling fs layer
+fabac8a2abd7: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+1425a2af6f51: Pulling fs layer
+0666ab41c2be: Pulling fs layer
+6d14abb20181: Pulling fs layer
+1709176accd8: Pulling fs layer
+1cb841b0d6cf: Pulling fs layer
+6f91a2e06588: Pulling fs layer
+4f4fb700ef54: Already exists
+6f91a2e06588: Download complete
+8e8cf49b6d3c: Download complete
+f18232174bc9: Download complete
+1425a2af6f51: Download complete
+fabac8a2abd7: Download complete
+0666ab41c2be: Download complete
+1cb841b0d6cf: Download complete
+f18232174bc9: Pull complete
+6d14abb20181: Download complete
+788f4db0066a: Download complete
+1709176accd8: Download complete
+fabac8a2abd7: Pull complete
+4f4fb700ef54: Pull complete
+1425a2af6f51: Pull complete
+0666ab41c2be: Pull complete
+6d14abb20181: Pull complete
+1709176accd8: Pull complete
+1cb841b0d6cf: Pull complete
+6f91a2e06588: Pull complete
+8e8cf49b6d3c: Pull complete
+Digest: sha256:851f91d241214e7c6db86513b270d58776379aacc5eb9c4a87e5b47115e3065c
+Status: Downloaded newer image for docker:27.5.1-cli
+Compose project: shipping-smoke, entry point: http://127.0.0.1:18000
+FAIL  test_compose_configuration_is_valid: no configuration file provided: not found
+FAIL  test_compose_refuses_to_start_without_a_database_password: error does not name POSTGRES_PASSWORD: no configuration file provided: not found
+FAIL  test_compose_defines_exactly_the_api_database_proxy_and_migration_services: services are 'no configuration file provided: not found', expected 'api migrate postgres traefik'
+FAIL  test_compose_images_build: no configuration file provided: not found
+FAIL  test_api_image_runs_the_shipping_host_and_refuses_to_start_without_a_connection_string: no api image in the configuration
+FAIL  test_api_image_is_a_runtime_image_running_as_non_root_without_sdk_or_migration_tooling: no api image in the configuration
+FAIL  test_compose_up_starts_and_waits_for_every_service: no configuration file provided: not found
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+FAIL  test_postgres_is_healthy_by_pg_isready: no postgres container
+FAIL  test_migrations_finish_successfully_before_the_api_starts: no migrate container
+FAIL  test_api_is_ready_and_running: no api container
+FAIL  test_api_reaches_postgres_by_its_service_name: api connection string does not name the postgres service:
+FAIL  test_networks_separate_the_proxy_from_the_database: api networks: no api container
+FAIL  test_only_the_proxy_entry_point_is_published_on_the_host: traefik:80 is published as ''
+FAIL  test_traefik_routes_requests_for_the_api_host_to_the_api: no answer from http://127.0.0.1:18000/sls126-unmapped-route (Host: localhost): no response
+FAIL  test_traefik_does_not_route_other_hosts: no answer from http://127.0.0.1:18000/ (Host: unknown.invalid): no response
+FAIL  test_traefik_has_no_dashboard_or_api_and_a_read_only_docker_socket: containers are exposed by default: no traefik container
+FAIL  test_each_module_is_migrated_through_its_own_schema_and_history: service "postgres" is not running
+Sample history in sample is '', expected '20261015081705_Baseline '
+FAIL  test_migrations_run_again_change_nothing: service "postgres" is not running
+a second migration run failed
+FAIL  test_api_stays_running_after_the_checks: no api container
+FAIL  test_database_data_survives_container_recreation_and_compose_down: service "postgres" is not running
+could not write the marker
+FAIL  test_a_failed_migration_prevents_the_api_from_starting: api is 'no api container
+absent'
+
+Passed: 0, Failed: 21, Total: 21
+  failed: test_compose_configuration_is_valid
+  failed: test_compose_refuses_to_start_without_a_database_password
+  failed: test_compose_defines_exactly_the_api_database_proxy_and_migration_services
+  failed: test_compose_images_build
+  failed: test_api_image_runs_the_shipping_host_and_refuses_to_start_without_a_connection_string
+  failed: test_api_image_is_a_runtime_image_running_as_non_root_without_sdk_or_migration_tooling
+  failed: test_compose_up_starts_and_waits_for_every_service
+  failed: test_postgres_is_healthy_by_pg_isready
+  failed: test_migrations_finish_successfully_before_the_api_starts
+  failed: test_api_is_ready_and_running
+  failed: test_api_reaches_postgres_by_its_service_name
+  failed: test_networks_separate_the_proxy_from_the_database
+  failed: test_only_the_proxy_entry_point_is_published_on_the_host
+  failed: test_traefik_routes_requests_for_the_api_host_to_the_api
+  failed: test_traefik_does_not_route_other_hosts
+  failed: test_traefik_has_no_dashboard_or_api_and_a_read_only_docker_socket
+  failed: test_each_module_is_migrated_through_its_own_schema_and_history
+  failed: test_migrations_run_again_change_nothing
+  failed: test_api_stays_running_after_the_checks
+  failed: test_database_data_survives_container_recreation_and_compose_down
+  failed: test_a_failed_migration_prevents_the_api_from_starting
+Logs of the last state:
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+EXIT=1
