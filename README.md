@@ -254,6 +254,8 @@ Start with `docker compose ps -a` (state and health of each service) and `docker
   in detail, smoke tests.
 - [Persistence](docs/persistence.md): module contexts, migrations, production migration bundles.
 - [Development workflow](docs/development-workflow.md): from requirement to shipped behaviour.
+- [Team walkthrough](docs/onboarding/team-walkthrough.md): the onboarding session for the team, with its
+  [demo runbook](docs/onboarding/demo-runbook.md) and [readiness checklist](docs/onboarding/team-readiness-checklist.md).
 - [Architecture decisions](docs/architecture/): ADR-001 (four projects per module), ADR-002 (module persistence).
 - [Modules](src/Modules/README.md): module rules and the upstream MP Core module guidance.
 - [AI skills](docs/ai-skills.md) and `.mpcore/skills/`: the procedures assistants follow in this repository.

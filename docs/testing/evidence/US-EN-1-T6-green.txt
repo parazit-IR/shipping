@@ -1,0 +1,473 @@
+# US-EN-1 T6 GREEN 2026-10-19T06:14:40Z, branch feat/us-en-1-t6-team-walkthrough, base 95fd2ec + uncommitted T6 changes, .NET SDK 10.0.302
+
+$ git status --short
+ M README.md
+ M docs/local-environment.md
+ M tests/Shipping.ArchitectureTests/DocumentationTests.cs
+?? docs/onboarding/
+?? docs/testing/US-EN-1-T6-red-green.md
+?? docs/testing/evidence/US-EN-1-T6-red.txt
+?? docs/testing/evidence/US-EN-1-T6-rehearsal.txt
+?? tests/Shipping.ArchitectureTests/WalkthroughDocumentationTests.cs
+[exit 0, 1 s]
+
+$ dotnet restore Shipping.slnx
+  Determining projects to restore...
+  Restored C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\Shipping.UnitTests.csproj (in 445 ms).
+  Restored C:\Users\S_cmm\shipping\shipping\tests\Shipping.IntegrationTests\Shipping.IntegrationTests.csproj (in 445 ms).
+  6 of 8 projects are up-to-date for restore.
+[exit 0, 2 s]
+
+$ dotnet build Shipping.slnx -c Release --no-restore
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.84
+[exit 0, 5 s]
+
+$ dotnet test Shipping.slnx -c Release --no-build --logger 'console;verbosity=normal'
+Test run for C:\Users\S_cmm\shipping\shipping\tests\Shipping.IntegrationTests\bin\Release\net10.0\Shipping.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+Test run for C:\Users\S_cmm\shipping\shipping\tests\Shipping.UnitTests\bin\Release\net10.0\Shipping.UnitTests.dll (.NETCoreApp,Version=v10.0)
+Test run for C:\Users\S_cmm\shipping\shipping\tests\Shipping.ArchitectureTests\bin\Release\net10.0\Shipping.ArchitectureTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.10)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.10)
+[xUnit.net 00:00:00.22]   Discovering: Shipping.IntegrationTests
+[xUnit.net 00:00:00.23]   Discovering: Shipping.ArchitectureTests
+[xUnit.net 00:00:00.37]   Discovered:  Shipping.IntegrationTests
+[xUnit.net 00:00:00.50]   Starting:    Shipping.IntegrationTests
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.10)
+[xUnit.net 00:00:00.47]   Discovered:  Shipping.ArchitectureTests
+[xUnit.net 00:00:00.58]   Starting:    Shipping.ArchitectureTests
+[xUnit.net 00:00:00.26]   Discovering: Shipping.UnitTests
+[xUnit.net 00:00:00.46]   Discovered:  Shipping.UnitTests
+[xUnit.net 00:00:00.57]   Starting:    Shipping.UnitTests
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_runs_clone_configure_validate_start_check_and_stop_in_order [120 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_4_creates_a_module_in_a_disposable_clone_and_never_in_the_working_checkout [15 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_1_checks_docker_then_configures_validates_starts_and_checks_health_in_order [5 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_has_the_onboarding_sections_with_the_quickstart_before_the_dotnet_workflow [2 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_build_and_test_commands_are_the_ones_CI_runs [3 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_waits_and_retries_for_a_bounded_time_against_the_port_and_host_compose_publishes [2 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readiness_checklist_leaves_every_human_slot_empty [13 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_stops_the_environment_without_deleting_the_database_volume [7 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Runbook_has_six_demonstrations_each_with_commands_expected_results_and_recovery [4 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_windows_alternatives_use_powershell_commands_and_curl_exe [2 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_run_no_command_that_deletes_what_they_did_not_create [3 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_module_instructions_match_the_template_and_the_host [3 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_and_evidence_name_no_invented_Jira_key [5 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Each_module_registers_its_context_with_MP_Cores_provider_setup_and_never_binds_the_global_unit_of_work [275 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.The_host_declares_no_DbContext_of_its_own [< 1 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Relative_markdown_links_resolve_to_files_and_headings [351 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_agenda_is_contiguous_and_takes_60_to_90_minutes [29 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_2_inspects_the_schema_and_history_the_Sample_module_owns [7 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_claim_no_human_outcome_and_no_capability_that_is_not_built [12 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Onboarding_documents_do_not_describe_delivered_work_as_missing [7 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_3_runs_the_CI_commands_and_each_test_project [13 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readme_quickstart_needs_no_dotnet_sdk [1 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_guide_links_the_runbook_the_checklist_the_evidence_and_the_canonical_guides [2 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_guide_has_the_parts_a_facilitator_needs [1 ms]
+[testcontainers.org 00:00:00.55] Connected to Docker:
+  Host: tcp://127.0.0.1:2375/
+  Server Version: 27.5.1
+  Kernel Version: 6.18.33.2-microsoft-standard-WSL2
+  API Version: 1.47
+  Operating System: Alpine Linux v3.21
+  Total Memory: 31.34 GB
+  Passed Shipping.ArchitectureTests.DocumentationTests.Paths_named_in_the_onboarding_documents_exist [14 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Runbook_demo_5_stops_and_restarts_only_postgres_and_explains_503_and_traefiks_404 [1 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Readiness_checklist_separates_agent_verification_attendance_readiness_acceptance_and_blockers [11 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Onboarding_keeps_the_database_password_out_of_the_repository [3 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Every_demonstration_in_the_guide_says_what_to_expect_why_it_matters_and_how_to_recover [2 ms]
+  Passed Shipping.ArchitectureTests.DocumentationTests.Walkthrough_documents_use_curl_exe_in_powershell [11 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.No_foreign_key_crosses_a_schema [804 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Every_module_context_is_a_distinct_type [3 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Nothing_in_the_host_or_a_module_creates_or_migrates_the_database [3 ms]
+  Passed Shipping.UnitTests.UnitOfWorkCompositionTests.MP_Core_binds_IUnitOfWork_to_the_first_context_registered_and_ignores_a_second [391 ms]
+[testcontainers.org 00:00:01.18] Docker container 6740aba9856d created
+2026-10-19T06:14:56.240Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:14:56.245Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:14:56.245Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:14:56.246Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:14:56.246Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:14:56.246Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:14:56.258Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:14:56.259Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:14:56.259Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:14:56.284Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:14:56.381Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:14:56.424Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:14:56.424Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:14:56.424Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:14:56.569Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:14:56.608Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:14:56.608Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:14:56.608Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+[testcontainers.org 00:00:01.78] Start Docker container 6740aba9856d
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Domain_and_Application_never_see_Entity_Framework_or_Npgsql [194 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Each_module_context_maps_only_its_own_entities_into_its_own_schema [20 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Every_migration_belongs_to_a_module_context_in_that_modules_assembly [2 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.A_module_context_is_not_visible_outside_its_module [19 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Each_module_has_a_baseline_migration_and_no_pending_model_change [122 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Each_module_context_uses_its_own_schema_by_default_and_records_its_migrations_there [3 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Foreign_key_rule_rejects_a_key_across_schemas [664 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Every_module_owns_exactly_one_runtime_context_named_after_it_and_it_is_an_MP_Core_unit_of_work [< 1 ms]
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Schema_rule_rejects_a_table_in_another_modules_schema [5 ms]
+2026-10-19T06:14:56.888Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:14:56.934Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+  Passed Shipping.UnitTests.ModuleRegistrationTests.Sample_module_registers_its_own_context_and_unit_of_work_and_nothing_global [404 ms]
+  Passed Shipping.UnitTests.ModuleRegistrationTests.Sample_module_requires_a_connection_string [1 ms]
+  Passed Shipping.UnitTests.ModuleRegistrationTests.Sample_endpoint_mapping_can_be_invoked [312 ms]
+  Passed Shipping.UnitTests.UnitOfWorkCompositionTests.The_host_resolves_each_modules_own_context_and_unit_of_work_as_one_scoped_instance [690 ms]
+  Passed Shipping.UnitTests.HealthEndpointCompositionTests.Health_is_mapped_on_the_real_host_for_GET_only_and_open_to_callers_without_a_token [1 s]
+  Passed Shipping.UnitTests.HealthEndpointCompositionTests.Each_module_registers_one_bounded_check_of_its_own_database_and_the_host_registers_none [181 ms]
+  Passed Shipping.UnitTests.HostCompositionTests.Real_host_builds_and_serves_requests_with_its_configured_services [1 s]
+  Passed Shipping.UnitTests.HealthEndpointCompositionTests.A_POST_to_health_is_refused [375 ms]
+  Passed Shipping.UnitTests.UnitOfWorkCompositionTests.A_second_module_neither_takes_over_nor_is_shadowed_by_Sample_whatever_the_registration_order [956 ms]
+2026-10-19T06:14:57.393Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:14:57.393Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:14:57.393Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:14:57.394Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+[xUnit.net 00:00:02.90]   Finished:    Shipping.UnitTests
+  Passed Shipping.UnitTests.UnitOfWorkCompositionTests.The_host_refuses_to_start_without_a_database_connection [113 ms]
+  Passed Shipping.UnitTests.UnitOfWorkCompositionTests.The_host_binds_no_global_IUnitOfWork [29 ms]
+
+Test Run Successful.
+Total tests: 12
+     Passed: 12
+ Total time: 4.6420 Seconds
+[testcontainers.org 00:00:02.91] Wait for Docker container 6740aba9856d to complete readiness checks
+  Passed Shipping.ArchitectureTests.Persistence.PersistenceRulesTests.Each_module_declares_its_own_unit_of_work_port_and_only_its_context_implements_it [1 ms]
+[testcontainers.org 00:00:04.06] Docker container 6740aba9856d ready
+[testcontainers.org 00:00:04.47] Docker container 5d35a0e7f06f created
+[testcontainers.org 00:00:04.49] Start Docker container 5d35a0e7f06f
+[testcontainers.org 00:00:05.36] Wait for Docker container 5d35a0e7f06f to complete readiness checks
+[testcontainers.org 00:00:05.42] Execute "pg_isready --host localhost --dbname postgres --username postgres" at Docker container 5d35a0e7f06f
+[testcontainers.org 00:00:06.76] Execute "pg_isready --host localhost --dbname postgres --username postgres" at Docker container 5d35a0e7f06f
+[testcontainers.org 00:00:08.15] Execute "pg_isready --host localhost --dbname postgres --username postgres" at Docker container 5d35a0e7f06f
+[testcontainers.org 00:00:09.44] Execute "pg_isready --host localhost --dbname postgres --username postgres" at Docker container 5d35a0e7f06f
+  Passed Shipping.ArchitectureTests.SkeletonTests.All_module_project_dependencies_obey_boundaries [10 s]
+[testcontainers.org 00:00:10.67] Execute "pg_isready --host localhost --dbname postgres --username postgres" at Docker container 5d35a0e7f06f
+[testcontainers.org 00:00:10.92] Docker container 5d35a0e7f06f ready
+2026-10-19T06:15:08.777Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:08.781Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:08.781Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:08.816Z warn Microsoft.EntityFrameworkCore.Model[10632]: No instantiatable types implementing `IEntityTypeConfiguration` were found while scanning assembly 'Shipping.Modules.Sample.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
+2026-10-19T06:15:08.857Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+2026-10-19T06:15:08.920Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM sample."__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-10-19T06:15:09.148Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+  Passed Shipping.IntegrationTests.ModuleRuntimeTests.The_hosts_module_contexts_connect_to_the_one_database_and_each_defaults_to_its_own_schema [3 s]
+2026-10-19T06:15:09.827Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:09.827Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:09.827Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:10.060Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (21ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?'], CommandType='Text', CommandTimeout='30']
+INSERT INTO probe_alpha.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p0, @p1, @p2, @p3);
+2026-10-19T06:15:10.117Z fail Microsoft.EntityFrameworkCore.Database.Command[20102]: Failed executing DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?', @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = DateTime), @p7='?'], CommandType='Text', CommandTimeout='30']
+INSERT INTO probe_alpha.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p0, @p1, @p2, @p3);
+INSERT INTO probe_alpha.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p4, @p5, @p6, @p7);
+2026-10-19T06:15:10.131Z fail Microsoft.EntityFrameworkCore.Update[10000]: An exception occurred in the database while saving changes for context type 'Shipping.IntegrationTests.AlphaProbeDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "PK_records"
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "PK_records"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: probe_alpha
+    TableName: records
+    ConstraintName: PK_records
+    File: nbtinsert.c
+    Line: 666
+    Routine: _bt_check_unique
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "PK_records"
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "PK_records"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: probe_alpha
+    TableName: records
+    ConstraintName: PK_records
+    File: nbtinsert.c
+    Line: 666
+    Routine: _bt_check_unique
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2026-10-19T06:15:10.176Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:15:10.549Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:10.549Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:10.549Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:10.569Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?'], CommandType='Text', CommandTimeout='30']
+INSERT INTO probe_alpha.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p0, @p1, @p2, @p3);
+  Passed Shipping.IntegrationTests.ModuleRuntimeTests.A_save_that_fails_commits_nothing_of_that_module [1 s]
+2026-10-19T06:15:10.921Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT r."Id", r."CreatedOnUtc", r."ModifiedOnUtc", r."Name"
+FROM probe_alpha.records AS r
+LIMIT 2
+2026-10-19T06:15:10.936Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:15:11.274Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:11.274Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:11.274Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:11.340Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (13ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?'], CommandType='Text', CommandTimeout='30']
+INSERT INTO probe_beta.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p0, @p1, @p2, @p3);
+2026-10-19T06:15:11.366Z fail Microsoft.EntityFrameworkCore.Database.Command[20102]: Failed executing DbCommand (8ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?', @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = DateTime), @p7='?'], CommandType='Text', CommandTimeout='30']
+INSERT INTO probe_beta.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p0, @p1, @p2, @p3);
+INSERT INTO probe_beta.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p4, @p5, @p6, @p7);
+2026-10-19T06:15:11.367Z fail Microsoft.EntityFrameworkCore.Update[10000]: An exception occurred in the database while saving changes for context type 'Shipping.IntegrationTests.BetaProbeDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "PK_records"
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "PK_records"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: probe_beta
+    TableName: records
+    ConstraintName: PK_records
+    File: nbtinsert.c
+    Line: 666
+    Routine: _bt_check_unique
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "PK_records"
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "PK_records"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: probe_beta
+    TableName: records
+    ConstraintName: PK_records
+    File: nbtinsert.c
+    Line: 666
+    Routine: _bt_check_unique
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2026-10-19T06:15:11.390Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?'], CommandType='Text', CommandTimeout='30']
+INSERT INTO probe_alpha.records ("Id", "CreatedOnUtc", "ModifiedOnUtc", "Name")
+VALUES (@p0, @p1, @p2, @p3);
+2026-10-19T06:15:11.432Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+  Passed Shipping.IntegrationTests.ModuleRuntimeTests.A_write_through_a_modules_unit_of_work_lands_in_its_schema_with_MP_Cores_save_behaviour [759 ms]
+  Passed Shipping.IntegrationTests.ModuleRuntimeTests.Two_modules_units_of_work_in_one_scope_do_not_interfere [494 ms]
+  Passed Shipping.IntegrationTests.ModuleMigrationTests.A_fresh_database_gets_each_modules_schema_and_a_migration_history_inside_it [299 ms]
+  Passed Shipping.IntegrationTests.ModuleMigrationTests.Each_modules_migrations_apply_on_their_own_and_create_nothing_of_another_module [750 ms]
+  Passed Shipping.IntegrationTests.ModuleMigrationTests.Every_table_and_column_of_each_modules_runtime_model_exists_in_its_schema_after_its_migrations [685 ms]
+2026-10-19T06:15:14.706Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:14.707Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:14.707Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:14.809Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[103]: Health check sample-database with status Unhealthy completed after 19.7095ms with message '(null)'
+2026-10-19T06:15:14.862Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+2026-10-19T06:15:14.867Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:15:15.109Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:15.109Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:15.109Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:15.127Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+2026-10-19T06:15:15.128Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+  Passed Shipping.IntegrationTests.ModuleMigrationTests.One_modules_migration_history_neither_sees_nor_disturbs_anothers [810 ms]
+  Passed Shipping.IntegrationTests.ModuleMigrationTests.Applying_the_migrations_again_changes_nothing [457 ms]
+  Passed Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_with_no_detail_while_the_database_refuses_connections_and_200_once_it_accepts_them [414 ms]
+  Passed Shipping.IntegrationTests.HealthEndpointTests.Health_never_uses_the_request_scoped_module_context [260 ms]
+2026-10-19T06:15:15.348Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:15.348Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:15.348Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:17.406Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2052.5052ms
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Persistence\SampleDatabaseHealthCheck.cs:line 37
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-10-19T06:15:17.388Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2034.8479ms
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Persistence\SampleDatabaseHealthCheck.cs:line 37
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-10-19T06:15:17.387Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2031.8709ms
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Persistence\SampleDatabaseHealthCheck.cs:line 37
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-10-19T06:15:17.389Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2035.6882ms
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Persistence\SampleDatabaseHealthCheck.cs:line 37
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-10-19T06:15:17.392Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2039.012ms
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Persistence\SampleDatabaseHealthCheck.cs:line 37
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-10-19T06:15:17.425Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+  Passed Shipping.IntegrationTests.HealthEndpointTests.Concurrent_requests_share_one_connection_attempt_while_it_is_still_running [2 s]
+2026-10-19T06:15:18.235Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:18.235Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:18.235Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:20.238Z fail Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService[104]: Health check sample-database threw an unhandled exception after 2000.4429ms
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Shipping.Modules.Sample.Infrastructure.Persistence.SampleDatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in C:\Users\S_cmm\shipping\shipping\src\Modules\Sample\Shipping.Modules.Sample.Infrastructure\Persistence\SampleDatabaseHealthCheck.cs:line 37
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(HealthCheckRegistration registration, CancellationToken cancellationToken)
+2026-10-19T06:15:20.240Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+  Passed Shipping.IntegrationTests.HealthEndpointTests.Health_returns_503_within_its_timeout_when_opening_a_connection_ignores_cancellation [2 s]
+2026-10-19T06:15:20.476Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:20.476Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:20.476Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:20.494Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+2026-10-19T06:15:20.647Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+2026-10-19T06:15:21.037Z info Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2026-10-19T06:15:21.037Z info Microsoft.Hosting.Lifetime: Hosting environment: Development
+2026-10-19T06:15:21.037Z info Microsoft.Hosting.Lifetime: Content root path: C:\Users\S_cmm\shipping\shipping\src\Shipping.Platform.Api
+2026-10-19T06:15:21.055Z info Microsoft.EntityFrameworkCore.Database.Command[20101]: Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+2026-10-19T06:15:21.056Z info Microsoft.Hosting.Lifetime: Application is shutting down...
+[testcontainers.org 00:00:26.26] Delete Docker container 5d35a0e7f06f
+  Passed Shipping.IntegrationTests.HealthEndpointTests.Health_neither_migrates_nor_creates_anything_in_the_database [407 ms]
+  Passed Shipping.IntegrationTests.HealthEndpointTests.Health_returns_200_Healthy_without_a_token_when_every_module_reaches_the_database [446 ms]
+[xUnit.net 00:00:28.15]   Finished:    Shipping.IntegrationTests
+
+Test Run Successful.
+Total tests: 15
+     Passed: 15
+ Total time: 30.1374 Seconds
+  Passed Shipping.ArchitectureTests.SkeletonTests.Evaluated_references_reject_adversarial_edges [19 s]
+  Passed Shipping.ArchitectureTests.SkeletonTests.Solution_contains_one_host_and_four_sample_projects [471 ms]
+  Passed Shipping.ArchitectureTests.SkeletonTests.Compiled_sample_layers_obey_dependency_direction [10 ms]
+  Passed Shipping.ArchitectureTests.SkeletonTests.Compiled_host_calls_sample_service_and_endpoint_registration [4 ms]
+[xUnit.net 00:00:44.70]   Finished:    Shipping.ArchitectureTests
+  Passed Shipping.ArchitectureTests.SkeletonTests.Template_can_generate_and_compile_a_disposable_host [14 s]
+
+Test Run Successful.
+Total tests: 49
+     Passed: 49
+ Total time: 46.0409 Seconds
+[exit 0, 51 s]
+
+$ docker compose config --quiet   (with a generated throwaway POSTGRES_PASSWORD, not printed)
+[exit 0, 1 s]
+
+$ (docker:27.5.1-cli runner on the engine host, WSL Docker CLI, repository mounted, host network) bash tests/compose/compose-smoke.sh
+docker: Error response from daemon: the working directory 'C:/Program Files/Git/repo' is invalid, it needs to be an absolute path.
+See 'docker run --help'.
+[exit 125, 0 s]
+# finished 2026-10-19T06:15:41Z
+
+# The runner attempt above failed before starting (Git Bash rewrote -w /repo). Rerun with MSYS_NO_PATHCONV=1, 2026-10-19T06:16:01Z:
+$ (docker:27.5.1-cli runner on the engine host, WSL Docker CLI, repository mounted, host network) bash tests/compose/compose-smoke.sh
+Compose project: shipping-smoke, entry point: http://127.0.0.1:18000
+PASS  test_compose_configuration_is_valid
+PASS  test_compose_refuses_to_start_without_a_database_password
+PASS  test_compose_defines_exactly_the_api_database_proxy_and_migration_services
+PASS  test_compose_images_build
+PASS  test_api_image_runs_the_shipping_host_and_refuses_to_start_without_a_connection_string
+PASS  test_api_image_is_a_runtime_image_running_as_non_root_without_sdk_or_migration_tooling
+PASS  test_compose_up_starts_and_waits_for_every_service
+PASS  test_postgres_is_healthy_by_pg_isready
+PASS  test_migrations_finish_successfully_before_the_api_starts
+PASS  test_api_is_ready_and_running
+PASS  test_api_readiness_is_its_health_endpoint
+PASS  test_api_reaches_postgres_by_its_service_name
+PASS  test_networks_separate_the_proxy_from_the_database
+PASS  test_only_the_proxy_entry_point_is_published_on_the_host
+PASS  test_traefik_routes_requests_for_the_api_host_to_the_api
+PASS  test_traefik_does_not_route_other_hosts
+PASS  test_traefik_has_no_dashboard_or_api_and_a_read_only_docker_socket
+PASS  test_health_returns_200_healthy_from_the_api_through_traefik
+PASS  test_health_returns_503_while_postgres_is_stopped_and_200_once_it_is_back
+PASS  test_each_module_is_migrated_through_its_own_schema_and_history
+PASS  test_migrations_run_again_change_nothing
+PASS  test_api_stays_running_after_the_checks
+PASS  test_database_data_survives_container_recreation_and_compose_down
+PASS  test_a_failed_migration_prevents_the_api_from_starting
+
+Passed: 24, Failed: 0, Total: 24
+[exit 0, 265 s]
+# finished 2026-10-19T06:20:27Z

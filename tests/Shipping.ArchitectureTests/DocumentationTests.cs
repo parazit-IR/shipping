@@ -11,7 +11,11 @@ namespace Shipping.ArchitectureTests;
 public partial class DocumentationTests
 {
     private static readonly string Root = FindRoot();
-    private static readonly string[] OnboardingDocuments = ["README.md", "docs/getting-started.md", "docs/local-environment.md"];
+    private static readonly string[] OnboardingDocuments =
+    [
+        "README.md", "docs/getting-started.md", "docs/local-environment.md",
+        "docs/onboarding/team-walkthrough.md", "docs/onboarding/demo-runbook.md", "docs/onboarding/team-readiness-checklist.md"
+    ];
 
     /// <summary>The module name the README uses in its "Create a module" example. A developer may follow it literally.</summary>
     private const string ExampleModule = "Booking";
@@ -180,7 +184,7 @@ public partial class DocumentationTests
     [Fact]
     public void Onboarding_documents_do_not_describe_delivered_work_as_missing()
     {
-        string[] obsolete = [@"no health endpoint", @"may add[^.]*health probes", @"new-developer README:\s*SLS-15 T5"];
+        string[] obsolete = [@"no health endpoint", @"may add[^.]*health probes", @"new-developer README:\s*SLS-15 T5", @"team walkthrough:\**\s*SLS-15 T6\."];
         foreach (var document in OnboardingDocuments)
         {
             var text = Regex.Replace(Read(document), @"\s+", " ");
@@ -243,7 +247,7 @@ public partial class DocumentationTests
     private static bool LooksLikeRepositoryPath(string code)
     {
         if (!Regex.IsMatch(code, @"^[A-Za-z0-9_.\-]+(/[A-Za-z0-9_.\-]+)*/?$") || DeveloperFiles.Contains(code)
-            || code.Contains(ExampleModule, StringComparison.Ordinal))
+            || code.Contains(ExampleModule, StringComparison.Ordinal) || code.Contains(DemoModule, StringComparison.Ordinal))
             return false;
         var first = code.Split('/')[0];
         return code.Contains('/')

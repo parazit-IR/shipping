@@ -127,7 +127,9 @@ it in the `compose-smoke` job. Evidence:
 
 ## Known limitations and pending SLS-15 work
 
-- **New-developer quickstart:** the [README](../README.md#quickstart) (US-EN-1 T5). **Team walkthrough:** SLS-15 T6.
+- **New-developer quickstart:** the [README](../README.md#quickstart) (US-EN-1 T5). **Team walkthrough:** the
+  [facilitator guide](onboarding/team-walkthrough.md) and [demo runbook](onboarding/demo-runbook.md) (US-EN-1 T6);
+  each session is recorded in the [readiness checklist](onboarding/team-readiness-checklist.md).
 - **Docker socket:** the read-only bind keeps Traefik from changing the socket file, but it does not restrict
   the Docker API calls Traefik makes. Traefik's Docker provider only reads. If that is not acceptable, a
   socket proxy that allows only read calls is the next step. That decision is not made here.

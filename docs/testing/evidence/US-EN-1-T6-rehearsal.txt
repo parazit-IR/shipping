@@ -1,0 +1,1160 @@
+# US-EN-1 T6 technical rehearsal of docs/onboarding/demo-runbook.md, 2026-10-19
+# Machine: Windows Server 2025 VM; Docker Engine 27.5.1 in WSL 2; .NET SDK 10.0.302. Fresh clones of main (95fd2ec) from GitHub.
+# Each command is printed with $ (Git Bash) or > (PowerShell), then its output and [exit code, seconds].
+# Where output was piped through grep or tail, the printed exit code is that of the last command in the pipe.
+
+######## Demo 1 — Git Bash
+# started 2026-10-19T05:56:15Z
+
+$ docker info --format 'Server {{.ServerVersion}}, {{.OperatingSystem}}, {{.NCPU}} CPU'
+Server 27.5.1, Alpine Linux v3.21, 8 CPU
+[exit 0, 0 s]
+
+$ docker compose version
+Docker Compose version v2.32.4
+[exit 0, 1 s]
+
+$ git clone --quiet https://github.com/parazit-IR/shipping.git shipping
+[exit 0, 3 s]
+
+$ git log -1 --oneline
+95fd2ec Merge pull request #6 from parazit-IR/feat/us-en-1-t5-readme-quickstart
+[exit 0, 0 s]
+
+$ cp .env.example .env
+[exit 0, 0 s]
+
+$ sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env
+[exit 0, 1 s]
+
+$ grep -c '^POSTGRES_PASSWORD=.\+' .env   # 1 = set; the value itself is not printed
+1
+[exit 0, 0 s]
+
+$ docker compose config --quiet
+[exit 0, 1 s]
+
+$ docker compose up --build -d --wait --wait-timeout 300 2>&1 | grep -v -E '^ *#|^\s*$' | tail -15
+ Container shipping-migrate-1  Started
+ Container shipping-migrate-1  Waiting
+ Container shipping-postgres-1  Waiting
+ Container shipping-postgres-1  Healthy
+ Container shipping-migrate-1  Exited
+ Container shipping-api-1  Starting
+ Container shipping-api-1  Started
+ Container shipping-traefik-1  Waiting
+ Container shipping-postgres-1  Waiting
+ Container shipping-migrate-1  Waiting
+ Container shipping-api-1  Waiting
+ Container shipping-migrate-1  Exited
+ Container shipping-traefik-1  Healthy
+ Container shipping-postgres-1  Healthy
+ Container shipping-api-1  Healthy
+[exit 0, 22 s]
+
+$ docker compose ps
+NAME                  IMAGE                  COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+shipping-api-1        shipping-api           "dotnet Shipping.Pla…"   api        15 seconds ago   Up 7 seconds (healthy)    8080/tcp
+shipping-postgres-1   postgres:17.6-alpine   "docker-entrypoint.s…"   postgres   16 seconds ago   Up 15 seconds (healthy)
+shipping-traefik-1    traefik:v3.7.15        "/entrypoint.sh --en…"   traefik    16 seconds ago   Up 15 seconds             127.0.0.1:8000->80/tcp
+[exit 0, 1 s]
+
+$ docker compose ps -a migrate --format '{{.Service}}: {{.Status}}'
+migrate: Exited (0) 7 seconds ago
+[exit 0, 0 s]
+
+$ docker compose logs migrate --no-color | grep -v -i password
+migrate-1  | Applying /migrations/sample-efbundle
+migrate-1  | Cannot load library libgssapi_krb5.so.2
+migrate-1  | Error: libgssapi_krb5.so.2: cannot open shared object file: No such file or directory
+migrate-1  | Failed executing DbCommand (41ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+migrate-1  | SELECT "MigrationId", "ProductVersion"
+migrate-1  | FROM sample."__EFMigrationsHistory"
+migrate-1  | ORDER BY "MigrationId";
+migrate-1  | Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+migrate-1  | Applying migration '20261015081705_Baseline'.
+migrate-1  | Done.
+[exit 0, 1 s]
+
+$ curl -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8000/health
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                              0100      7   0      7   0      0     29      0                              0100      7   0      7   0      0     29      0                              0100      7   0      7   0      0     29      0                              0
+HTTP/1.1 200 OK
+Cache-Control: no-store, no-cache
+Content-Type: text/plain
+Date: Mon, 19 Oct 2026 05:56:45 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Pragma: no-cache
+Server: Kestrel
+Transfer-Encoding: chunked
+
+Healthy[exit 0, 0 s]
+
+$ curl -i -s http://localhost:8000/
+HTTP/1.1 404 Not Found
+Content-Length: 0
+Date: Mon, 19 Oct 2026 05:56:45 GMT
+Server: Kestrel
+
+[exit 0, 0 s]
+
+$ curl -i -s -H 'Host: other' http://localhost:8000/health
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Mon, 19 Oct 2026 05:56:46 GMT
+Content-Length: 19
+
+404 page not found
+[exit 0, 1 s]
+# Demo 1 elapsed 32 s; finished 2026-10-19T05:56:47Z
+
+######## Demo 2 — Git Bash (files, migrate), Windows CLI exec (no output on this VM), WSL CLI exec (psql)
+# Demo 2 rehearsal 2026-10-19T05:57:06Z
+$ ls src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/Migrations
+src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence:
+Migrations
+SampleDatabaseHealthCheck.cs
+SampleDbContext.cs
+SampleDbContextDesignTimeFactory.cs
+SamplePersistence.cs
+
+src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/Migrations:
+20261015081705_Baseline.cs
+20261015081705_Baseline.Designer.cs
+SampleDbContextModelSnapshot.cs
+$ grep -n "Schema =\|HasDefaultSchema\|MigrationsHistoryTable" (Sample Persistence sources)
+src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/SampleDbContext.cs:23:        optionsBuilder.UseNpgsql(npgsql => npgsql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, SamplePersistence.Schema));
+src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/SampleDbContext.cs:27:        modelBuilder.HasDefaultSchema(SamplePersistence.Schema);
+src/Modules/Sample/Shipping.Modules.Sample.Infrastructure/Persistence/SamplePersistence.cs:9:    public const string Schema = "sample";
+
+$ (Git Bash, Windows Docker CLI) printf "\dn\n" | docker compose exec -T postgres psql -U shipping -d shipping
+[exit 0] captured output: ''
+
+$ (WSL Docker CLI, same engine) docker compose exec -T postgres psql -U shipping -d shipping  <<< \dn; \dt sample.*; SELECT ... FROM sample."__EFMigrationsHistory"
+The system cannot find the path specified.
+Error code: Wsl/ERROR_PATH_NOT_FOUND
+# (The rehearsal's own wsl --cd invocation failed above; it is not a runbook command. Rerun with cd inside the WSL shell:)
+      List of schemas
+  Name  |       Owner
+--------+-------------------
+ public | pg_database_owner
+ sample | shipping
+(2 rows)
+
+                 List of relations
+ Schema |         Name          | Type  |  Owner
+--------+-----------------------+-------+----------
+ sample | __EFMigrationsHistory | table | shipping
+(1 row)
+
+       MigrationId       | ProductVersion
+-------------------------+----------------
+ 20261015081705_Baseline | 10.0.11
+(1 row)
+
+[exit 0]
+$ docker compose start migrate
+ Container shipping-postgres-1  Waiting
+ Container shipping-postgres-1  Healthy
+ Container shipping-migrate-1  Starting
+ Container shipping-migrate-1  Started
+[exit 0]
+$ docker compose ps -a migrate --format "{{.Service}}: {{.Status}}"
+migrate: Exited (0) 1 second ago
+$ docker compose logs migrate --no-color | tail -4
+migrate-1  | Error: libgssapi_krb5.so.2: cannot open shared object file: No such file or directory
+migrate-1  | Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+migrate-1  | No migrations were applied. The database is already up to date.
+migrate-1  | Done.
+[exit 0]
+
+######## Demo 5 run 1 — Git Bash, through Traefik
+# Demo 5 rehearsal 2026-10-19T05:57:44Z
+05:57:44Z before: 200 server=Kestrel; api Up About a minute (healthy)
+$ docker compose stop postgres
+ Container shipping-postgres-1  Stopping
+ Container shipping-postgres-1  Stopped
+[exit 0]
+$ curl -i http://localhost:8000/health   (no retry)
+HTTP/1.1 503 Service Unavailable
+Cache-Control: no-store, no-cache
+Content-Type: text/plain
+Date: Mon, 19 Oct 2026 05:57:46 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Pragma: no-cache
+Server: Kestrel
+Transfer-Encoding: chunked
+
+Unhealthy
+[05:57:47Z]
+05:57:50Z +4s health=503 server=Kestrel | api: Up About a minute (healthy)
+05:58:44Z +58s health=503 server=Kestrel | api: Up 2 minutes (healthy)
+05:59:39Z +113s health=503 server=Kestrel | api: Up 3 minutes (healthy)
+06:00:10Z +144s health=404 server=(none) | api: Up 3 minutes (unhealthy)
+$ curl -i http://localhost:8000/health   (API out of rotation)
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Mon, 19 Oct 2026 06:00:10 GMT
+Content-Length: 19
+
+404 page not found
+
+$ docker compose start postgres
+ Container shipping-postgres-1  Starting
+ Container shipping-postgres-1  Started
+[exit 0]
+06:00:21Z +10s after start: health=200 server=Kestrel | api: Up 3 minutes (healthy)
+$ curl -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8000/health
+HTTP/1.1 200 OK
+Cache-Control: no-store, no-cache
+Content-Type: text/plain
+Date: Mon, 19 Oct 2026 06:00:21 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Pragma: no-cache
+Server: Kestrel
+Transfer-Encoding: chunked
+
+Healthy
+[exit 0]
+$ docker compose ps
+NAME                  IMAGE                  COMMAND                  SERVICE    CREATED         STATUS                    PORTS
+shipping-api-1        shipping-api           "dotnet Shipping.Pla…"   api        3 minutes ago   Up 3 minutes (healthy)    8080/tcp
+shipping-postgres-1   postgres:17.6-alpine   "docker-entrypoint.s…"   postgres   3 minutes ago   Up 11 seconds (healthy)
+shipping-traefik-1    traefik:v3.7.15        "/entrypoint.sh --en…"   traefik    3 minutes ago   Up 3 minutes              127.0.0.1:8000->80/tcp
+
+######## Demo 5 run 2 — Traefik vs direct Kestrel once the API is unhealthy
+# Demo 5b: direct Kestrel vs Traefik once Docker marks the API unhealthy 2026-10-19T06:02:38Z
+$ docker compose stop postgres
+ Container shipping-postgres-1  Stopped
+06:05:00Z api: Up 8 minutes (unhealthy)
+$ curl -i http://localhost:8000/health   (through Traefik)
+HTTP/1.1 404 Not Found
+404 page not found
+$ (WSL CLI) docker compose exec api bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080; printf "GET /health ..." >&3; cat <&3'   (direct to Kestrel)
+HTTP/1.1 503 Service Unavailable
+Server: Kestrel
+Unhealthy
+$ docker compose start postgres
+ Container shipping-postgres-1  Started
+HTTP/1.1 404 Not Found
+HTTP/1.1 404 Not Found
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+06:05:09Z [exit 0]
+
+######## Demo 3 — Git Bash
+# Demo 3 rehearsal 2026-10-19T06:00:51Z, clone of main 95fd2ec, .NET SDK 10.0.302
+
+$ docker info --format 'Server {{.ServerVersion}}'
+Server 27.5.1
+[exit 0, 1 s]
+
+$ dotnet restore Shipping.slnx 2>&1 | tail -3
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t6r\shipping\tests\Shipping.IntegrationTests\Shipping.IntegrationTests.csproj (in 2.1 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t6r\shipping\tests\Shipping.UnitTests\Shipping.UnitTests.csproj (in 2.1 sec).
+  Restored C:\Users\S_cmm\AppData\Local\Temp\2\t6r\shipping\src\Shipping.Platform.Api\Shipping.Platform.Api.csproj (in 2.24 sec).
+[exit 0, 5 s]
+
+$ dotnet build Shipping.slnx -c Release --no-restore 2>&1 | tail -5
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:09.98
+[exit 0, 10 s]
+
+$ dotnet test tests/Shipping.UnitTests -c Release --no-build 2>&1 | grep -E 'Passed!|Failed!|error|Total tests|Passed:|Failed:|Skipped:'
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+[exit 0, 6 s]
+
+$ dotnet test tests/Shipping.ArchitectureTests -c Release --no-build 2>&1 | grep -E 'Passed!|Failed!|error|Total tests|Passed:|Failed:|Skipped:'
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 47 s - Shipping.ArchitectureTests.dll (net10.0)
+[exit 0, 51 s]
+
+$ dotnet test tests/Shipping.IntegrationTests -c Release --no-build 2>&1 | grep -E 'Passed!|Failed!|error|Total tests|Passed:|Failed:|Skipped:'
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 12 s - Shipping.IntegrationTests.dll (net10.0)
+[exit 0, 23 s]
+# finished 2026-10-19T06:02:30Z
+
+######## Demo 4 — Git Bash, runbook bash blocks, with the optional Compose step
+# Demo 4 rehearsal 2026-10-19T06:05:23Z
+
+$ DEMO="$(mktemp -d)/shipping-demo"; echo "$DEMO"
+/tmp/tmp.xlJk2N6l2R/shipping-demo
+[exit 0, 0 s]
+
+$ git clone --quiet https://github.com/parazit-IR/shipping.git "$DEMO"
+[exit 0, 2 s]
+
+$ export DOTNET_CLI_HOME="$DEMO/.dotnet-home"
+[exit 0, 1 s]
+
+$ dotnet new install ./templates/Module
+
+Welcome to .NET 10.0!
+---------------------
+SDK Version: 10.0.302
+
+Telemetry
+---------
+The .NET tools collect usage data in order to help us improve your experience. It is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_CLI_TELEMETRY_OPTOUT environment variable to '1' or 'true' using your favorite shell.
+
+Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemetry
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, run 'dotnet dev-certs https --trust'
+Learn about HTTPS: https://aka.ms/dotnet-https
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\tmp.xlJk2N6l2R\shipping-demo\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\tmp.xlJk2N6l2R\shipping-demo\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0, 1 s]
+
+$ dotnet new shipping-module --name Walkthrough --output src/Modules/Walkthrough
+The template "Shipping four-project module" was created successfully.
+
+[exit 0, 3 s]
+
+$ find src/Modules/Walkthrough -name "*.csproj" | sort
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Application/Shipping.Modules.Walkthrough.Application.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Domain/Shipping.Modules.Walkthrough.Domain.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Shipping.Modules.Walkthrough.Infrastructure.csproj
+[exit 0, 0 s]
+
+$ dotnet sln Shipping.slnx add src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Application\Shipping.Modules.Walkthrough.Application.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Domain\Shipping.Modules.Walkthrough.Domain.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Infrastructure\Shipping.Modules.Walkthrough.Infrastructure.csproj` added to the solution.
+[exit 0, 2 s]
+
+$ dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Reference `..\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the project.
+[exit 0, 1 s]
+
+# Program.cs edited by hand in the demo; here with sed, next to Sample's three lines
+
+$ git diff --stat; grep -n "Walkthrough" src/Shipping.Platform.Api/Program.cs
+warning: in the working copy of 'src/Shipping.Platform.Api/Program.cs', LF will be replaced by CRLF the next time Git touches it
+ Shipping.slnx                                          | 6 ++++++
+ src/Shipping.Platform.Api/Program.cs                   | 3 +++
+ src/Shipping.Platform.Api/Shipping.Platform.Api.csproj | 3 +++
+ 3 files changed, 12 insertions(+)
+5:using Shipping.Modules.Walkthrough.Api;
+32:builder.Services.AddWalkthroughModule(databaseConnection);
+44:app.MapWalkthroughModule();
+[exit 0, 0 s]
+
+$ dotnet build Shipping.slnx 2>&1 | tail -3
+    0 Error(s)
+
+Time Elapsed 00:00:18.96
+[exit 0, 19 s]
+
+$ dotnet tool restore 2>&1 | tail -2
+
+Restore was successful.
+[exit 0, 5 s]
+
+$ export ConnectionStrings__PostgreSql="Host=localhost;Database=shipping"
+[exit 0, 0 s]
+
+$ dotnet ef migrations add Baseline --project src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure --startup-project src/Shipping.Platform.Api --context WalkthroughDbContext --output-dir Persistence/Migrations 2>&1 | tail -3
+Build started...
+Build succeeded.
+Done. To undo this action, use 'ef migrations remove'
+[exit 0, 9 s]
+
+$ ls src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Persistence/Migrations
+20261019060608_Baseline.cs
+20261019060608_Baseline.Designer.cs
+WalkthroughDbContextModelSnapshot.cs
+[exit 0, 0 s]
+
+$ grep -n "EnsureSchema\|schema: \"walkthrough\"" src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Persistence/Migrations/*_Baseline.cs | head -3
+[exit 0, 1 s]
+
+$ dotnet test Shipping.slnx 2>&1 | grep -E "Passed!|Failed!|error "
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 15 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 37 s - Shipping.ArchitectureTests.dll (net10.0)
+[exit 0, 64 s]
+
+# Optional: the clone's own Compose project migrates the new module (needs no compose.yaml or Dockerfile change)
+
+$ cp .env.example .env && sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env && echo SHIPPING_HTTP_PORT=8001 >> .env
+[exit 0, 1 s]
+
+$ docker compose -p shipping-walkthrough up --build -d --wait --wait-timeout 300 2>&1 | grep -E "Healthy|Exited|Error|error" | tail -6
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-traefik-1  Healthy
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-api-1  Healthy
+[exit 0, 138 s]
+
+$ docker compose -p shipping-walkthrough logs migrate --no-color | grep -E "Applying|No migrations|Done"
+migrate-1  | Applying /migrations/sample-efbundle
+migrate-1  | Applying migration '20261015081705_Baseline'.
+migrate-1  | Done.
+migrate-1  | Applying /migrations/walkthrough-efbundle
+migrate-1  | Applying migration '20261019060608_Baseline'.
+migrate-1  | Done.
+[exit 0, 1 s]
+
+$ curl -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8001/health 2>/dev/null | tr -d "\r" | grep -E "^HTTP|^Server|Healthy"
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+[exit 0, 1 s]
+
+$ docker compose -p shipping-walkthrough down -v --rmi local 2>&1 | tail -8
+ Image shipping-walkthrough-migrate:latest  Removing
+ Network shipping-walkthrough_edge  Removing
+ Network shipping-walkthrough_backend  Removing
+ Image shipping-walkthrough-api:latest  Removed
+ Image shipping-walkthrough-migrate:latest  Removed
+ Volume shipping-walkthrough_postgres-data  Removed
+ Network shipping-walkthrough_backend  Removed
+ Network shipping-walkthrough_edge  Removed
+[exit 0, 3 s]
+
+$ docker volume ls -q --filter name=shipping-walkthrough | wc -l
+0
+[exit 0, 1 s]
+
+$ rm -rf "$DEMO"; test -e "$DEMO" && echo still-there || echo removed
+removed
+[exit 0, 7 s]
+# Demo 4 elapsed 263 s; finished 2026-10-19T06:09:47Z
+
+######## Demo 4 — Windows PowerShell 5.1, runbook PowerShell blocks, without the optional step
+# Demo 4 PowerShell rehearsal 2026-10-19T06:11:03Z, PowerShell 5.1.26100.33648
+> $demo = C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-3f2cf774
+
+> git clone https://github.com/parazit-IR/shipping.git $demo
+[exit 0, 2 s]
+> $env:DOTNET_CLI_HOME = "C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-3f2cf774\.dotnet-home"
+
+> dotnet new install ./templates/Module
+Welcome to .NET 10.0!
+---------------------
+SDK Version: 10.0.302
+Telemetry
+---------
+The .NET tools collect usage data in order to help us improve your experience. It is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_CLI_TELEMETRY_OPTOUT environment variable to '1' or 'true' using your favorite shell.
+Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemetry
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, run 'dotnet dev-certs https --trust'
+Learn about HTTPS: https://aka.ms/dotnet-https
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-3f2cf774\templates\Module installed the following templates:
+Shipping four-project module  shipping-module            Shipping/Module
+[exit 0, 1 s]
+
+> dotnet new shipping-module --name Walkthrough --output src/Modules/Walkthrough
+The template "Shipping four-project module" was created successfully.
+
+[exit 0, 2 s]
+
+> dotnet sln Shipping.slnx add src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Application\Shipping.Modules.Walkthrough.Application.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Domain\Shipping.Modules.Walkthrough.Domain.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Infrastructure\Shipping.Modules.Walkthrough.Infrastructure.csproj` added to the solution.
+[exit 0, 1 s]
+
+> dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Reference `..\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the project.
+[exit 0, 1 s]
+
+# Program.cs: the three lines added next to Sample's (by hand in the demo)
+5: using Shipping.Modules.Walkthrough.Api;
+32: builder.Services.AddWalkthroughModule(databaseConnection);
+44: app.MapWalkthroughModule();
+
+> dotnet build Shipping.slnx
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:16.03
+[exit 0, 17 s]
+
+> dotnet tool restore
+Restore was successful.
+[exit 0, 5 s]
+> $env:ConnectionStrings__PostgreSql = "Host=localhost;Database=shipping"
+
+> dotnet ef migrations add Baseline --project src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure --startup-project src/Shipping.Platform.Api --context WalkthroughDbContext --output-dir Persistence/Migrations
+Done. To undo this action, use 'ef migrations remove'
+[exit 0, 10 s]
+
+> Get-ChildItem .../Persistence/Migrations
+20261019061142_Baseline.cs
+20261019061142_Baseline.Designer.cs
+WalkthroughDbContextModelSnapshot.cs
+[exit 0, 0 s]
+
+> dotnet test Shipping.slnx
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 14 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 35 s - Shipping.ArchitectureTests.dll (net10.0)
+[exit 0, 54 s]
+
+> Set-Location $HOME; Remove-Item -Recurse -Force $demo
+removed: True
+[exit 0, 6 s]
+> Remove-Item Env:DOTNET_CLI_HOME, Env:ConnectionStrings__PostgreSql -> DOTNET_CLI_HOME set: False
+# Demo 4 PowerShell elapsed 100 s
+
+######## GitHub and MP Core checks — Windows PowerShell, Invoke-WebRequest, unauthenticated, read-only
+GET https://api.github.com/repos/parazit-IR/shipping/branches/main -> 200; name=main protected=False
+GET https://api.github.com/repos/parazit-IR/shipping/rules/branches/main -> 200; body: []
+GET https://api.github.com/repos/parazit-IR/shipping/rulesets -> 200; body: []
+GET https://api.github.com/repos/panahister/mpcore/releases?per_page=5 -> 200; tags: v1.0.1, v1.0.0, v0.10.1, v0.10.0, v0.9.3
+checked at 2026-10-19T06:23:30Z, unauthenticated
+######## Post-review rehearsal of changed Demo 1 / Demo 5 commands, 2026-10-19T06:26:02Z, rehearsal clone (project shipping running)
+$ docker volume ls -q --filter name=shipping_postgres-data
+shipping_postgres-data
+[exit 0]
+$ docker compose ps -a migrate --format '{{.Service}}: {{.Status}}'
+migrate: Exited (0) 28 minutes ago
+[exit 0]
+$ curl -i http://127.0.0.1:8000/health
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Mon, 19 Oct 2026 06:26:03 GMT
+Content-Length: 19
+
+404 page not found
+
+[exit 0]
+
+# A second fresh clone on the same machine reuses the volume: copy .env from the clone that created it
+$ git clone https://github.com/parazit-IR/shipping.git second && cd second
+[exit 0]
+$ cp ../shipping/.env .env
+[exit 0]
+$ docker compose config --quiet
+[exit 0]
+$ docker compose up --build -d --wait --wait-timeout 300
+ Container shipping-postgres-1  Healthy
+ Container shipping-migrate-1  Exited
+ Container shipping-traefik-1  Healthy
+ Container shipping-api-1  Healthy
+[exit 0]
+$ docker compose logs migrate | tail -3
+migrate-1  | Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+migrate-1  | No migrations were applied. The database is already up to date.
+migrate-1  | Done.
+$ curl -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8000/health
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+[exit 0]
+
+# Demo 5 recovery command
+$ docker compose restart api
+ Container shipping-api-1  Restarting
+ Container shipping-api-1  Started
+[exit 0]
+$ curl -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8000/health
+HTTP/1.1 404 Not Found
+HTTP/1.1 404 Not Found
+HTTP/1.1 404 Not Found
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+[exit 0]
+$ docker compose ps
+api: Up 7 seconds (healthy)
+postgres: Up 21 minutes (healthy)
+traefik: Up 29 minutes
+
+######## Post-review Demo 4, run A — Git Bash (new DOTNET_* variables, parent-directory clean-up)
+# Demo 4 rehearsal (post-review) 2026-10-19T06:27:18Z
+
+$ DEMO="$(mktemp -d)/shipping-demo"; echo "$DEMO"
+/tmp/tmp.j8ztFozf5V/shipping-demo
+[exit 0, 0 s]
+
+$ git clone --quiet https://github.com/parazit-IR/shipping.git "$DEMO"
+[exit 0, 2 s]
+
+$ export DOTNET_CLI_HOME="$DEMO/.dotnet-home" DOTNET_GENERATE_ASPNET_CERTIFICATE=false DOTNET_NOLOGO=1
+[exit 0, 0 s]
+
+$ dotnet new install ./templates/Module
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\tmp.j8ztFozf5V\shipping-demo\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\tmp.j8ztFozf5V\shipping-demo\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0, 1 s]
+
+$ dotnet new shipping-module --name Walkthrough --output src/Modules/Walkthrough
+The template "Shipping four-project module" was created successfully.
+
+[exit 0, 2 s]
+
+$ find src/Modules/Walkthrough -name "*.csproj" | sort
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Application/Shipping.Modules.Walkthrough.Application.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Domain/Shipping.Modules.Walkthrough.Domain.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Shipping.Modules.Walkthrough.Infrastructure.csproj
+[exit 0, 0 s]
+
+$ dotnet sln Shipping.slnx add src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Application\Shipping.Modules.Walkthrough.Application.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Domain\Shipping.Modules.Walkthrough.Domain.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Infrastructure\Shipping.Modules.Walkthrough.Infrastructure.csproj` added to the solution.
+[exit 0, 2 s]
+
+$ dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Reference `..\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the project.
+[exit 0, 1 s]
+
+# Program.cs edited by hand in the demo; here with sed, next to Sample's three lines
+
+$ git diff --stat; grep -n "Walkthrough" src/Shipping.Platform.Api/Program.cs
+warning: in the working copy of 'src/Shipping.Platform.Api/Program.cs', LF will be replaced by CRLF the next time Git touches it
+ Shipping.slnx                                          | 6 ++++++
+ src/Shipping.Platform.Api/Program.cs                   | 3 +++
+ src/Shipping.Platform.Api/Shipping.Platform.Api.csproj | 3 +++
+ 3 files changed, 12 insertions(+)
+5:using Shipping.Modules.Walkthrough.Api;
+32:builder.Services.AddWalkthroughModule(databaseConnection);
+44:app.MapWalkthroughModule();
+[exit 0, 1 s]
+
+$ dotnet build Shipping.slnx 2>&1 | tail -3
+    0 Error(s)
+
+Time Elapsed 00:00:19.79
+[exit 0, 20 s]
+
+$ dotnet tool restore 2>&1 | tail -2
+
+Restore was successful.
+[exit 0, 5 s]
+
+$ export ConnectionStrings__PostgreSql="Host=localhost;Database=shipping"
+[exit 0, 0 s]
+
+$ dotnet ef migrations add Baseline --project src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure --startup-project src/Shipping.Platform.Api --context WalkthroughDbContext --output-dir Persistence/Migrations 2>&1 | tail -3
+Build started...
+Build succeeded.
+Done. To undo this action, use 'ef migrations remove'
+[exit 0, 41 s]
+
+$ ls src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Persistence/Migrations
+20261019062835_Baseline.cs
+20261019062835_Baseline.Designer.cs
+WalkthroughDbContextModelSnapshot.cs
+[exit 0, 1 s]
+
+$ grep -n "EnsureSchema\|schema: \"walkthrough\"" src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Persistence/Migrations/*_Baseline.cs | head -3
+[exit 0, 1 s]
+
+$ dotnet test Shipping.slnx 2>&1 | grep -E "Passed!|Failed!|error "
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 3 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 33 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 1 m 4 s - Shipping.ArchitectureTests.dll (net10.0)
+[exit 0, 133 s]
+
+# Optional: the clone's own Compose project migrates the new module (needs no compose.yaml or Dockerfile change)
+
+$ cp .env.example .env && sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env && echo SHIPPING_HTTP_PORT=8001 >> .env
+[exit 0, 1 s]
+
+$ docker compose -p shipping-walkthrough up --build -d --wait --wait-timeout 300 2>&1 | grep -E "Healthy|Exited|Error|error" | tail -6
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-traefik-1  Healthy
+ Container shipping-walkthrough-api-1  Healthy
+[exit 0, 129 s]
+
+$ docker compose -p shipping-walkthrough logs migrate --no-color | grep -E "Applying|No migrations|Done"
+migrate-1  | Applying /migrations/sample-efbundle
+migrate-1  | Applying migration '20261015081705_Baseline'.
+migrate-1  | Done.
+migrate-1  | Applying /migrations/walkthrough-efbundle
+migrate-1  | Applying migration '20261019062835_Baseline'.
+migrate-1  | Done.
+[exit 0, 1 s]
+
+$ curl -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8001/health 2>/dev/null | tr -d "\r" | grep -E "^HTTP|^Server|Healthy"
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+[exit 0, 1 s]
+
+$ docker compose -p shipping-walkthrough down -v --rmi local 2>&1 | tail -8
+ Image shipping-walkthrough-migrate:latest  Removing
+ Network shipping-walkthrough_edge  Removing
+ Network shipping-walkthrough_backend  Removing
+ Image shipping-walkthrough-api:latest  Removed
+ Volume shipping-walkthrough_postgres-data  Removed
+ Image shipping-walkthrough-migrate:latest  Removed
+ Network shipping-walkthrough_backend  Removed
+ Network shipping-walkthrough_edge  Removed
+[exit 0, 3 s]
+
+$ docker volume ls -q --filter name=shipping-walkthrough | wc -l
+0
+[exit 0, 2 s]
+
+$ rm -rf "$(dirname "$DEMO")"; test -e "$(dirname "$DEMO")" && echo still-there || echo removed; unset DOTNET_CLI_HOME DOTNET_GENERATE_ASPNET_CERTIFICATE DOTNET_NOLOGO ConnectionStrings__PostgreSql; env | grep -c -E "^(DOTNET_CLI_HOME|DOTNET_NOLOGO|ConnectionStrings__)"
+removed
+0
+[exit 1, 8 s]
+# Demo 4 elapsed 359 s; finished 2026-10-19T06:33:17Z
+
+######## Post-review Demo 4, run A — Windows PowerShell 5.1 with the optional Compose step. Its clean-up FAILED: removed: False
+# Demo 4 PowerShell rehearsal (post-review) 2026-10-19T06:33:18Z, PowerShell 5.1.26100.33648
+> $demo = C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6
+
+> git clone https://github.com/parazit-IR/shipping.git $demo
+[exit 0, 2 s]
+> $env:DOTNET_CLI_HOME = "$demo\.dotnet-home"; $env:DOTNET_GENERATE_ASPNET_CERTIFICATE = "false"; $env:DOTNET_NOLOGO = "1"
+
+> dotnet new install ./templates/Module
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0, 1 s]
+
+> dotnet new shipping-module --name Walkthrough --output src/Modules/Walkthrough
+The template "Shipping four-project module" was created successfully.
+
+[exit 0, 2 s]
+
+> dotnet sln Shipping.slnx add src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Application\Shipping.Modules.Walkthrough.Application.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Domain\Shipping.Modules.Walkthrough.Domain.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Infrastructure\Shipping.Modules.Walkthrough.Infrastructure.csproj` added to the solution.
+[exit 0, 1 s]
+
+> dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Reference `..\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the project.
+[exit 0, 1 s]
+
+# Program.cs: the three lines added next to Sample's (by hand in the demo)
+5: using Shipping.Modules.Walkthrough.Api;
+32: builder.Services.AddWalkthroughModule(databaseConnection);
+44: app.MapWalkthroughModule();
+
+> dotnet build Shipping.slnx
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:19.16
+[exit 0, 20 s]
+
+> dotnet tool restore
+Restore was successful.
+[exit 0, 5 s]
+> $env:ConnectionStrings__PostgreSql = "Host=localhost;Database=shipping"
+
+> dotnet ef migrations add Baseline --project src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure --startup-project src/Shipping.Platform.Api --context WalkthroughDbContext --output-dir Persistence/Migrations
+Done. To undo this action, use 'ef migrations remove'
+[exit 0, 9 s]
+
+> Get-ChildItem .../Persistence/Migrations
+20261019063400_Baseline.cs
+20261019063400_Baseline.Designer.cs
+WalkthroughDbContextModelSnapshot.cs
+[exit 0, 0 s]
+
+> dotnet test Shipping.slnx
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 17 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 47 s - Shipping.ArchitectureTests.dll (net10.0)
+[exit 0, 74 s]
+
+# Optional step: the runbook's PowerShell block
+
+> Copy-Item .env.example .env; (Get-Content .env) -replace ... | Set-Content .env; Add-Content .env 'SHIPPING_HTTP_PORT=8001'   (password generated, not printed)
+non-empty password lines: 1; port line: 1
+[exit 0, 0 s]
+
+> docker compose -p shipping-walkthrough up --build -d --wait --wait-timeout 300
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-traefik-1  Healthy
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-api-1  Healthy
+[exit 0, 100 s]
+
+> docker compose -p shipping-walkthrough logs migrate
+migrate-1  | Applying /migrations/sample-efbundle
+migrate-1  | Applying migration '20261015081705_Baseline'.
+migrate-1  | Done.
+migrate-1  | Applying /migrations/walkthrough-efbundle
+migrate-1  | Applying migration '20261019063400_Baseline'.
+migrate-1  | Done.
+[exit 0, 0 s]
+
+> curl.exe -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8001/health
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+[exit 0, 0 s]
+
+> docker compose -p shipping-walkthrough down -v --rmi local
+ Volume shipping-walkthrough_postgres-data  Removing
+ Image shipping-walkthrough-api:latest  Removing
+ Image shipping-walkthrough-migrate:latest  Removing
+ Image shipping-walkthrough-api:latest  Removed
+ Image shipping-walkthrough-migrate:latest  Removed
+ Volume shipping-walkthrough_postgres-data  Removed
+[exit 0, 2 s]
+
+> docker volume ls -q --filter name=shipping-walkthrough
+volumes left: 0
+[exit 0, 0 s]
+
+> Set-Location $HOME; Remove-Item -Recurse -Force $demo
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home\.nuget\packages\microsoft.aspnetcore.mvc.testing\10.0.11\tasks\netstandard2.0\Microsoft.AspNetCore.Mvc.Testing.Tasks.dll: Access to the path 'Microsoft.AspNetCore.Mvc.Testing.Tasks.dll' is denied.
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home\.nuget\packages\microsoft.aspnetcore.mvc.testing\10.0.11\tasks\netstandard2.0: The directory is not empty.
+
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home\.nuget\packages\microsoft.aspnetcore.mvc.testing\10.0.11\tasks: The directory is not empty.
+
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home\.nuget\packages\microsoft.aspnetcore.mvc.testing\10.0.11: The directory is not empty.
+
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home\.nuget\packages\microsoft.aspnetcore.mvc.testing: The directory is not empty.
+
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home\.nuget\packages: The directory is not empty.
+
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home\.nuget: The directory is not empty.
+
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6\.dotnet-home: The directory is not empty.
+
+Cannot remove item C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-d208d8e6: The directory is not empty.
+
+removed: False
+[exit 0, 6 s]
+> Remove-Item Env:DOTNET_CLI_HOME, Env:DOTNET_GENERATE_ASPNET_CERTIFICATE, Env:DOTNET_NOLOGO, Env:ConnectionStrings__PostgreSql -> any still set: False
+# Demo 4 PowerShell elapsed 224 s
+# Diagnosis afterwards: one file left, ...\.dotnet-home\.nuget\packages\microsoft.aspnetcore.mvc.testing\10.0.11\tasks\netstandard2.0\Microsoft.AspNetCore.Mvc.Testing.Tasks.dll,
+# Remove-Item: Access to the path 'Microsoft.AspNetCore.Mvc.Testing.Tasks.dll' is denied. DOTNET_CLI_HOME also moves the NuGet cache into the clone,
+# and a reused MSBuild node held that task DLL. 'dotnet build-server shutdown' (MSBuild server and VB/C# compiler server shut down successfully), then removed: True.
+# The runbook's clean-up now runs 'dotnet build-server shutdown' first.
+
+######## Post-review Demo 4, run B — Git Bash, runbook as final
+# Demo 4 rehearsal (post-review) 2026-10-19T06:38:03Z
+
+$ DEMO="$(mktemp -d)/shipping-demo"; echo "$DEMO"
+/tmp/tmp.rvOLPhtFu8/shipping-demo
+[exit 0, 1 s]
+
+$ git clone --quiet https://github.com/parazit-IR/shipping.git "$DEMO"
+[exit 0, 2 s]
+
+$ export DOTNET_CLI_HOME="$DEMO/.dotnet-home" DOTNET_GENERATE_ASPNET_CERTIFICATE=false DOTNET_NOLOGO=1
+[exit 0, 0 s]
+
+$ dotnet new install ./templates/Module
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\tmp.rvOLPhtFu8\shipping-demo\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\tmp.rvOLPhtFu8\shipping-demo\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0, 2 s]
+
+$ dotnet new shipping-module --name Walkthrough --output src/Modules/Walkthrough
+The template "Shipping four-project module" was created successfully.
+
+[exit 0, 3 s]
+
+$ find src/Modules/Walkthrough -name "*.csproj" | sort
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Application/Shipping.Modules.Walkthrough.Application.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Domain/Shipping.Modules.Walkthrough.Domain.csproj
+src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Shipping.Modules.Walkthrough.Infrastructure.csproj
+[exit 0, 0 s]
+
+$ dotnet sln Shipping.slnx add src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Application\Shipping.Modules.Walkthrough.Application.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Domain\Shipping.Modules.Walkthrough.Domain.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Infrastructure\Shipping.Modules.Walkthrough.Infrastructure.csproj` added to the solution.
+[exit 0, 2 s]
+
+$ dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Reference `..\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the project.
+[exit 0, 2 s]
+
+# Program.cs edited by hand in the demo; here with sed, next to Sample's three lines
+
+$ git diff --stat; grep -n "Walkthrough" src/Shipping.Platform.Api/Program.cs
+warning: in the working copy of 'src/Shipping.Platform.Api/Program.cs', LF will be replaced by CRLF the next time Git touches it
+ Shipping.slnx                                          | 6 ++++++
+ src/Shipping.Platform.Api/Program.cs                   | 3 +++
+ src/Shipping.Platform.Api/Shipping.Platform.Api.csproj | 3 +++
+ 3 files changed, 12 insertions(+)
+5:using Shipping.Modules.Walkthrough.Api;
+32:builder.Services.AddWalkthroughModule(databaseConnection);
+44:app.MapWalkthroughModule();
+[exit 0, 0 s]
+
+$ dotnet build Shipping.slnx 2>&1 | tail -3
+    0 Error(s)
+
+Time Elapsed 00:00:33.47
+[exit 0, 34 s]
+
+$ dotnet tool restore 2>&1 | tail -2
+
+Restore was successful.
+[exit 0, 5 s]
+
+$ export ConnectionStrings__PostgreSql="Host=localhost;Database=shipping"
+[exit 0, 0 s]
+
+$ dotnet ef migrations add Baseline --project src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure --startup-project src/Shipping.Platform.Api --context WalkthroughDbContext --output-dir Persistence/Migrations 2>&1 | tail -3
+Build started...
+Build succeeded.
+Done. To undo this action, use 'ef migrations remove'
+[exit 0, 10 s]
+
+$ ls src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Persistence/Migrations
+20261019063906_Baseline.cs
+20261019063906_Baseline.Designer.cs
+WalkthroughDbContextModelSnapshot.cs
+[exit 0, 0 s]
+
+$ grep -n "EnsureSchema\|schema: \"walkthrough\"" src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure/Persistence/Migrations/*_Baseline.cs | head -3
+[exit 0, 0 s]
+
+$ dotnet test Shipping.slnx 2>&1 | grep -E "Passed!|Failed!|error "
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 2 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 15 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 34 s - Shipping.ArchitectureTests.dll (net10.0)
+[exit 0, 47 s]
+
+# Optional: the clone's own Compose project migrates the new module (needs no compose.yaml or Dockerfile change)
+
+$ cp .env.example .env && sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env && echo SHIPPING_HTTP_PORT=8001 >> .env
+[exit 0, 0 s]
+
+$ docker compose -p shipping-walkthrough up --build -d --wait --wait-timeout 300 2>&1 | grep -E "Healthy|Exited|Error|error" | tail -6
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-traefik-1  Healthy
+ Container shipping-walkthrough-api-1  Healthy
+[exit 0, 84 s]
+
+$ docker compose -p shipping-walkthrough logs migrate --no-color | grep -E "Applying|No migrations|Done"
+migrate-1  | Applying /migrations/sample-efbundle
+migrate-1  | Applying migration '20261015081705_Baseline'.
+migrate-1  | Done.
+migrate-1  | Applying /migrations/walkthrough-efbundle
+migrate-1  | Applying migration '20261019063906_Baseline'.
+migrate-1  | Done.
+[exit 0, 1 s]
+
+$ curl -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8001/health 2>/dev/null | tr -d "\r" | grep -E "^HTTP|^Server|Healthy"
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+[exit 0, 0 s]
+
+$ docker compose -p shipping-walkthrough down -v --rmi local 2>&1 | tail -8
+ Image shipping-walkthrough-api:latest  Removing
+ Network shipping-walkthrough_backend  Removing
+ Network shipping-walkthrough_edge  Removing
+ Image shipping-walkthrough-migrate:latest  Removed
+ Image shipping-walkthrough-api:latest  Removed
+ Volume shipping-walkthrough_postgres-data  Removed
+ Network shipping-walkthrough_edge  Removed
+ Network shipping-walkthrough_backend  Removed
+[exit 0, 2 s]
+
+$ docker volume ls -q --filter name=shipping-walkthrough | wc -l
+0
+[exit 0, 0 s]
+
+$ dotnet build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[exit 0, 1 s]
+
+$ rm -rf "$(dirname "$DEMO")"; test -e "$(dirname "$DEMO")" && echo still-there || echo removed; unset DOTNET_CLI_HOME DOTNET_GENERATE_ASPNET_CERTIFICATE DOTNET_NOLOGO ConnectionStrings__PostgreSql; env | grep -c -E "^(DOTNET_CLI_HOME|DOTNET_NOLOGO|ConnectionStrings__)"
+removed
+0
+[exit 1, 5 s]
+# Demo 4 elapsed 205 s; finished 2026-10-19T06:41:28Z
+
+######## Post-review Demo 4, run B — Windows PowerShell 5.1, runbook as final, with the optional Compose step
+# Demo 4 PowerShell rehearsal (post-review 2) 2026-10-19T06:41:29Z, PowerShell 5.1.26100.33648
+> $demo = C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-e21d2f86
+
+> git clone https://github.com/parazit-IR/shipping.git $demo
+[exit 0, 2 s]
+> $env:DOTNET_CLI_HOME = "$demo\.dotnet-home"; $env:DOTNET_GENERATE_ASPNET_CERTIFICATE = "false"; $env:DOTNET_NOLOGO = "1"
+
+> dotnet new install ./templates/Module
+The following template packages will be installed:
+   C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-e21d2f86\templates\Module
+
+Success: C:\Users\S_cmm\AppData\Local\Temp\2\shipping-demo-e21d2f86\templates\Module installed the following templates:
+Template Name                 Short Name       Language  Tags
+----------------------------  ---------------  --------  ---------------
+Shipping four-project module  shipping-module            Shipping/Module
+
+[exit 0, 2 s]
+
+> dotnet new shipping-module --name Walkthrough --output src/Modules/Walkthrough
+The template "Shipping four-project module" was created successfully.
+
+[exit 0, 2 s]
+
+> dotnet sln Shipping.slnx add src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Application\Shipping.Modules.Walkthrough.Application.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Domain\Shipping.Modules.Walkthrough.Domain.csproj` added to the solution.
+Project `src\Modules\Walkthrough\Shipping.Modules.Walkthrough.Infrastructure\Shipping.Modules.Walkthrough.Infrastructure.csproj` added to the solution.
+[exit 0, 1 s]
+
+> dotnet add src/Shipping.Platform.Api/Shipping.Platform.Api.csproj reference src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Api/Shipping.Modules.Walkthrough.Api.csproj
+Reference `..\Modules\Walkthrough\Shipping.Modules.Walkthrough.Api\Shipping.Modules.Walkthrough.Api.csproj` added to the project.
+[exit 0, 1 s]
+
+# Program.cs: the three lines added next to Sample's (by hand in the demo)
+5: using Shipping.Modules.Walkthrough.Api;
+32: builder.Services.AddWalkthroughModule(databaseConnection);
+44: app.MapWalkthroughModule();
+
+> dotnet build Shipping.slnx
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:27.39
+[exit 0, 28 s]
+
+> dotnet tool restore
+Restore was successful.
+[exit 0, 5 s]
+> $env:ConnectionStrings__PostgreSql = "Host=localhost;Database=shipping"
+
+> dotnet ef migrations add Baseline --project src/Modules/Walkthrough/Shipping.Modules.Walkthrough.Infrastructure --startup-project src/Shipping.Platform.Api --context WalkthroughDbContext --output-dir Persistence/Migrations
+Done. To undo this action, use 'ef migrations remove'
+[exit 0, 9 s]
+
+> Get-ChildItem .../Persistence/Migrations
+20261019064218_Baseline.cs
+20261019064218_Baseline.Designer.cs
+WalkthroughDbContextModelSnapshot.cs
+[exit 0, 0 s]
+
+> dotnet test Shipping.slnx
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 4 s - Shipping.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 29 s - Shipping.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 54 s - Shipping.ArchitectureTests.dll (net10.0)
+[exit 0, 76 s]
+
+# Optional step: the runbook's PowerShell block
+
+> Copy-Item .env.example .env; (Get-Content .env) -replace ... | Set-Content .env; Add-Content .env 'SHIPPING_HTTP_PORT=8001'   (password generated, not printed)
+non-empty password lines: 1; port line: 1
+[exit 0, 0 s]
+
+> docker compose -p shipping-walkthrough up --build -d --wait --wait-timeout 300
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-traefik-1  Healthy
+ Container shipping-walkthrough-postgres-1  Healthy
+ Container shipping-walkthrough-migrate-1  Exited
+ Container shipping-walkthrough-api-1  Healthy
+[exit 0, 106 s]
+
+> docker compose -p shipping-walkthrough logs migrate
+migrate-1  | Applying /migrations/sample-efbundle
+migrate-1  | Applying migration '20261015081705_Baseline'.
+migrate-1  | Done.
+migrate-1  | Applying /migrations/walkthrough-efbundle
+migrate-1  | Applying migration '20261019064218_Baseline'.
+migrate-1  | Done.
+[exit 0, 1 s]
+
+> curl.exe -i --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost:8001/health
+HTTP/1.1 200 OK
+Server: Kestrel
+Healthy
+[exit 0, 0 s]
+
+> docker compose -p shipping-walkthrough down -v --rmi local
+ Volume shipping-walkthrough_postgres-data  Removing
+ Image shipping-walkthrough-api:latest  Removing
+ Image shipping-walkthrough-migrate:latest  Removing
+ Image shipping-walkthrough-api:latest  Removed
+ Image shipping-walkthrough-migrate:latest  Removed
+ Volume shipping-walkthrough_postgres-data  Removed
+[exit 0, 3 s]
+
+> docker volume ls -q --filter name=shipping-walkthrough
+volumes left: 0
+[exit 0, 0 s]
+
+> dotnet build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[exit 0, 2 s]
+
+> Set-Location $HOME; Remove-Item -Recurse -Force $demo
+removed: True
+[exit 0, 7 s]
+> Remove-Item Env:DOTNET_CLI_HOME, Env:DOTNET_GENERATE_ASPNET_CERTIFICATE, Env:DOTNET_NOLOGO, Env:ConnectionStrings__PostgreSql -> any still set: False
+# Demo 4 PowerShell elapsed 244 s
