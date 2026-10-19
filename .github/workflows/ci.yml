@@ -14,5 +14,5 @@ jobs:
         run: dotnet restore Shipping.slnx
       - name: Build
         run: dotnet build Shipping.slnx -c Release --no-restore
-      - name: Unit and architecture tests
+      - name: Unit, architecture and PostgreSQL integration tests
         run: dotnet test Shipping.slnx -c Release --no-build --logger 'console;verbosity=normal'

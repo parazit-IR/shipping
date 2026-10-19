@@ -1,4 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
-  <ItemGroup><ProjectReference Include="../Shipping.Modules.Sample.Application/Shipping.Modules.Sample.Application.csproj" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Shipping.Modules.Sample.Application/Shipping.Modules.Sample.Application.csproj" />
+    <!-- EF Core and Npgsql stay in Infrastructure: MP Core's provider setup, at the version MP Core pins. -->
+    <PackageReference Include="MPCore.Persistence.EntityFrameworkCore.PostgreSql" Version="0.10.1" />
+  </ItemGroup>
 </Project>

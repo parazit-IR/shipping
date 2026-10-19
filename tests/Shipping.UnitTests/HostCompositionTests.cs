@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,9 @@ public class HostCompositionTests
     [Fact]
     public async Task Real_host_builds_and_serves_requests_with_its_configured_services()
     {
-        await using var factory = new WebApplicationFactory<Program>();
+        // The host requires a connection string (SLS-125); it is never opened by this test.
+        await using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(static host =>
+            host.UseSetting("ConnectionStrings:PostgreSql", "Host=model-only.invalid;Database=model_only"));
         using var client = factory.CreateClient();
         Assert.NotNull(factory.Services.GetRequiredService<IServiceScopeFactory>());
 

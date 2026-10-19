@@ -11,6 +11,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Shipping.ArchitectureTests/Shipping.ArchitectureTests.csproj" />
+    <Project Path="tests/Shipping.IntegrationTests/Shipping.IntegrationTests.csproj" />
     <Project Path="tests/Shipping.UnitTests/Shipping.UnitTests.csproj" />
   </Folder>
 </Solution>

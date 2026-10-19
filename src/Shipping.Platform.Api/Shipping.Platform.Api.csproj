@@ -1,6 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <!-- A real value never belongs in a committed file: dotnet user-secrets set, or the environment. -->
+    <UserSecretsId>shipping-platform-api-3f6b2a1c</UserSecretsId>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Modules/Sample/Shipping.Modules.Sample.Api/Shipping.Modules.Sample.Api.csproj" />
     <PackageReference Include="MPCore.Hosting" Version="$(MPCoreVersion)" />
+    <PackageReference Include="MPCore.Persistence.EntityFrameworkCore.PostgreSql" Version="$(MPCoreVersion)" />
+    <!-- Design-time only: `dotnet ef` with this project as the startup project. Pinned with MP Core's EF Core. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11" PrivateAssets="all" />
   </ItemGroup>
 </Project>

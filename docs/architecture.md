@@ -1,8 +1,15 @@
 # Architecture of Shipping.Platform
 
-This MP Core generated guide describes the full backend shape. The current T1 skeleton intentionally
-omits persistence and business behavior. See [ADR-001](architecture/ADR-001-four-project-modules.md)
-for Shipping's four-project module structure.
+This MP Core generated guide describes the full backend shape. The current skeleton intentionally
+omits business behavior. See [ADR-001](architecture/ADR-001-four-project-modules.md)
+for Shipping's four-project module structure, and the accepted
+[ADR-002](architecture/ADR-002-module-persistence.md) for its module persistence (SLS-125).
+
+> **Repository-specific deviation (ADR-002, accepted).** Where this guide describes one shared
+> `AppDbContext`, one unkeyed `IUnitOfWork` or one transaction owner per host, it describes MP Core's
+> default. Shipping uses one PostgreSQL database with one schema, one runtime `MPCoreDbContext`, one
+> `I<Module>UnitOfWork` and one migration history **per module**. There is no shared runtime
+> `AppDbContext`, and no transaction spans two modules. See [persistence](persistence.md).
 
 This describes **this** repository as it was generated, not everything MP Core can do. For the full
 framework catalogue and what is deliberately absent, read [capabilities.md](capabilities.md).
@@ -265,6 +272,10 @@ Two limits worth knowing before you rely on this:
   second `MPCoreDbContext` registered in the same host makes a handler that depends on `IUnitOfWork`
   ambiguous, and Wolverine refuses it. Modules share this repository's `AppDbContext`; a module that
   genuinely needs its own database is a separate service, not a second context here.
+  *Shipping deviates from this by decision:* under [ADR-002](architecture/ADR-002-module-persistence.md)
+  each module has its own context and its own `I<Module>UnitOfWork`, and no unkeyed `IUnitOfWork` is
+  registered. Wolverine is not installed (`messaging: none`). Adding it must explicitly support per-module
+  contexts, and that needs a new ADR.
 
 ## Three kinds of thing, deliberately not mixed
 
